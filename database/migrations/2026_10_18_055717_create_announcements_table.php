@@ -13,6 +13,18 @@ return new class extends Migration
     {
         Schema::create('announcements', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('staff_id')
+                ->constrained('barangay_employees')
+                ->restrictOnDelete();
+            
+            $table->string('title', 100);
+            $table->text('content');
+            $table->string('category', 50);
+            
+            $table->boolean('published')->default(false);
+            $table->timestamp('posted_at')->nullable();
+
             $table->timestamps();
         });
     }

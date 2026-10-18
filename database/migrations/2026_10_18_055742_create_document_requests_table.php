@@ -13,7 +13,31 @@ return new class extends Migration
     {
         Schema::create('document_requests', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+
+            $table->foreignId('resident_id')
+                  ->constrained('residents')
+                  ->restrictOnDelete();
+
+            $table->foreignId('document_type_id')
+                  ->constrained('document_types')
+                  ->restrictOnDelete();
+            
+
+
+            $table->foreignId('staff_id')
+                  ->nullable()
+                  ->constrained('barangay_employees')
+                  ->nullOnDelete();
+
+            $table->text('purpose');
+
+            $table->string('status')->default('pending');
+            
+                  
+
+
+            $table->timestamps(); 
+            
         });
     }
 

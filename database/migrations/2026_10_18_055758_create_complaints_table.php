@@ -13,6 +13,21 @@ return new class extends Migration
     {
         Schema::create('complaints', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('resident_id')
+                  ->constrained('residents')
+                  ->restrictOnDelete();
+            
+            $table->foreignId('staff_id')
+                  ->nullable()
+                  ->constrained('barangay_employees')
+                  ->nullOnDelete();
+            
+            $table->string('complaint_type');
+            $table->text('content');
+            $table->string('status')->default('pending');
+
+            $table->string('attachment_url')->nullable();
+
             $table->timestamps();
         });
     }

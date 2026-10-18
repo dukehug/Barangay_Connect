@@ -14,22 +14,22 @@ return new class extends Migration
         Schema::create('residents', function (Blueprint $table) {
             $table->id();
 
-            $table->string('email')->uniqidue();
-            $table->string('email_verified_at')->nullable();
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
 
-            $table->string('first_name')->required();
+            $table->string('first_name');
             $table->string('middle_name')->nullable();
-            $table->string('last_name')->required();
-            $table->string('gender')->required();
-            $table->date('birth_date')->required();
+            $table->string('last_name');
+            $table->string('gender');
+            $table->date('birth_date');
 
             $table->string('marital_status')->default('Single');
             $table->string('blood_type')->nullable();
 
 
-            $table->string('contact_number')->nullable();
-            $table->string('resident_address')->required();
+            $table->string('contact_number')->nullable()->unique();
+            $table->string('resident_address');
 
             //user profile image_url
             $table->string('profile_image_url')->nullable();

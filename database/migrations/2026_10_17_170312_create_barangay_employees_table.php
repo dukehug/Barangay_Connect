@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('barangay_employees', function (Blueprint $table) {
             $table->id();
-            $table->string('role', 50)->default('Staff');
-            $table->string('first_name', 100)->required();
+            $table->string('role', 50)->default('staff');
+            $table->string('first_name', 100);
             $table->string('middle_name', 100)->nullable();
-            $table->string('last_name', 100)->required();
-            $table->string('email', 100)->unique()->required();
+            $table->string('last_name', 100);
+            $table->string('email', 100)->unique();
             $table->string('contact_number', 15)->nullable();
-            $table->string('password')->required();
+            $table->string('password');
 
             $table->rememberToken();
             $table->timestamps();

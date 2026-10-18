@@ -13,7 +13,23 @@ return new class extends Migration
     {
         Schema::create('audit_logs', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+
+            $table->foreignId('staff_id')
+                  ->constrained('barangay_employees')
+                  ->restrictOnDelete();
+            $table->string('action');
+
+            $table->string('table_affected');
+
+            $table->unsignedBigInteger('record_id');
+
+            $table->timestamp('created_at')->useCurrent();
+
+            $table->index([
+                'table_affected',
+                'record_id'
+            ]);
+
         });
     }
 
