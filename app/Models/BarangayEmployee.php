@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class BarangayEmployee extends Authenticatable
+class BarangayEmployee extends Authenticatable implements FilamentUser, HasName
 {
     protected $fillable = [
         'first_name',
@@ -30,6 +33,16 @@ class BarangayEmployee extends Authenticatable
         return [
             'password' => 'hashed',
         ];
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return in_array($this->role, ['admin', 'staff'], true);
+    }
+
+    public function getFilamentName(): string
+    {
+        return $this->first_name.' '.$this->last_name;
     }
 
     public function announcements(): HasMany

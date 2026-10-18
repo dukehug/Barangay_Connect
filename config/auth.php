@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\BarangayEmployee;
+use App\Models\Resident;
 use App\Models\User;
 
 return [
@@ -42,6 +44,15 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'employee' => [
+            'driver' => 'session',
+            'provider' => 'employees',
+        ],
+        'resident' => [
+            'driver' => 'session',
+            'provider' => 'residents',
+        ],
     ],
 
     /*
@@ -65,6 +76,16 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
+        ],
+
+        'employees' => [
+            'driver' => 'eloquent',
+            'model' => BarangayEmployee::class,
+        ],
+
+        'residents' => [
+            'driver' => 'eloquent',
+            'model' => Resident::class,
         ],
 
         // 'users' => [
