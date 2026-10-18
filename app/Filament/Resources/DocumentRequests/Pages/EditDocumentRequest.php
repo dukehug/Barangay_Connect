@@ -11,6 +11,11 @@ class EditDocumentRequest extends EditRecord
 {
     protected static string $resource = DocumentRequestResource::class;
 
+    public function getTitle(): string
+    {
+        return 'Handle '.($this->getRecord()->resident?->full_name ?? 'Unknown resident').'  Document Request';
+    }
+
     protected function getHeaderActions(): array
     {
         return [];

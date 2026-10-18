@@ -29,22 +29,22 @@ class DashboardStats extends StatsOverviewWidget
         return [
             Stat::make('Pending document requests', $pendingRequests)
                 ->description('Pending Document Requests')
-                ->descriptionIcon('heroicon-o-document-text')
+                ->descriptionIcon('lucide-file-text')
                 ->color($pendingRequests > 0 ? 'primary' : 'gray')
                 ->url(DocumentRequestResource::getUrl('index')),
             Stat::make('Open complaints', $openComplaints)
                 ->description('Pending and in-progress complaints')
-                ->descriptionIcon('heroicon-o-exclamation-circle')
+                ->descriptionIcon('lucide-message-square-warning')
                 ->color($openComplaints > 0 ? 'danger' : 'gray')
                 ->url(ComplaintResource::getUrl('index')),
             Stat::make('Published announcements', Announcement::where('published', true)->count())
                 ->description('Total Published Announcements')
-                ->descriptionIcon('heroicon-o-megaphone')
+                ->descriptionIcon('lucide-megaphone')
                 ->color('success')
                 ->url(AnnouncementResource::getUrl('index')),
             Stat::make('Registered residents', Resident::count())
                 ->description('Total number of residents')
-                ->descriptionIcon('heroicon-o-users')
+                ->descriptionIcon('lucide-users')
                 ->color('warning')
                 ->url(ResidentResource::getUrl('index')),
         ];

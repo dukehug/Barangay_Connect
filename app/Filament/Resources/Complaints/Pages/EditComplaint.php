@@ -11,6 +11,16 @@ class EditComplaint extends EditRecord
 {
     protected static string $resource = ComplaintResource::class;
 
+    public function getTitle(): string
+    {
+        return 'Handle '.($this->getRecord()->resident?->full_name ?? 'Unknown resident').' Complaint';
+    }
+
+    public function getBreadcrumb(): string
+    {
+        return 'Handle';
+    }
+
     protected function getHeaderActions(): array
     {
         return [];

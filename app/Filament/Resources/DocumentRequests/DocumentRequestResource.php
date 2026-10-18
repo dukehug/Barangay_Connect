@@ -10,14 +10,18 @@ use App\Models\DocumentRequest;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class DocumentRequestResource extends Resource
 {
     protected static ?string $model = DocumentRequest::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'lucide-file-text';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Daily Operations';
+
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $recordTitleAttribute = 'id';
 
