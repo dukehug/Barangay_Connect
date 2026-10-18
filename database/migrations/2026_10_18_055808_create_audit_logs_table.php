@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('staff_id')
-                  ->constrained('barangay_employees')
-                  ->restrictOnDelete();
+                ->constrained('barangay_employees')
+                ->restrictOnDelete();
             $table->string('action');
 
             $table->string('table_affected');
@@ -27,10 +27,11 @@ return new class extends Migration
 
             $table->index([
                 'table_affected',
-                'record_id'
+                'record_id',
             ]);
 
         });
+
     }
 
     /**
