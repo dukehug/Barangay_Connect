@@ -2,14 +2,24 @@
 
 namespace App\Models;
 
+use App\Enums\EmployeeRole;
+use Database\Factories\BarangayEmployeeFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class BarangayEmployee extends Authenticatable implements FilamentUser, HasName
 {
+    /** @use HasFactory<BarangayEmployeeFactory> */
+    use HasFactory;
+
+    protected $attributes = [
+        'is_active' => true,
+    ];
+
     protected $fillable = [
         'first_name',
         'last_name',
@@ -18,6 +28,7 @@ class BarangayEmployee extends Authenticatable implements FilamentUser, HasName
         'password',
         'contact_number',
         'role',
+        'is_active',
     ];
 
     protected $hidden = [
@@ -32,12 +43,19 @@ class BarangayEmployee extends Authenticatable implements FilamentUser, HasName
     {
         return [
             'password' => 'hashed',
+            'role' => EmployeeRole::class,
+            'is_active' => 'boolean',
         ];
     }
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return in_array($this->role, ['admin', 'staff'], true);
+        return $this->is_active && in_array($this->role, [EmployeeRole::Admin, EmployeeRole::Staff], true);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === EmployeeRole::Admin;
     }
 
     public function getFilamentName(): string

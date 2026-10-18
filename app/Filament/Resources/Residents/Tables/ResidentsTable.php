@@ -2,9 +2,7 @@
 
 namespace App\Filament\Resources\Residents\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -21,7 +19,7 @@ class ResidentsTable
                     ->circular(),
                 TextColumn::make('full_name')
                     ->label('Full Name')
-                    ->getStateUsing(fn ($record) => $record->first_name . ' ' . ($record->middle_name ? $record->middle_name . ' ' : '') . $record->last_name)
+                    ->getStateUsing(fn ($record) => $record->first_name.' '.($record->middle_name ? $record->middle_name.' ' : '').$record->last_name)
                     ->searchable(['first_name', 'middle_name', 'last_name'])
                     ->sortable(['first_name', 'middle_name', 'last_name']),
 
@@ -51,20 +49,12 @@ class ResidentsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-            
+
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
+                DeleteAction::make(),
             ]);
 
-            /*
-            //bulk delete action not allowed for residents table . delete it in future if needed.
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
-            */
     }
 }

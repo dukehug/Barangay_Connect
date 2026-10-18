@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\BarangayEmployees\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class BarangayEmployeesTable
@@ -14,7 +14,8 @@ class BarangayEmployeesTable
     {
         return $table
             ->columns([
-                TextColumn::make('role')
+                IconColumn::make('is_active')->boolean(),
+                TextColumn::make('role')->badge()
                     ->searchable(),
                 TextColumn::make('first_name')
                     ->searchable(),
@@ -37,15 +38,10 @@ class BarangayEmployeesTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                TernaryFilter::make('is_active')->label('Active'),
             ])
             ->recordActions([
                 EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ]);
     }
 }

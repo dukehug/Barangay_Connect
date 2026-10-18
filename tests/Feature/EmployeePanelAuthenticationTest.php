@@ -62,22 +62,16 @@ class EmployeePanelAuthenticationTest extends TestCase
     #[TestWith(['resident'])]
     #[TestWith(['Admin'])]
     #[TestWith([''])]
-    public function test_other_roles_cannot_sign_in(string $role): void
+    public function test_invalid_roles_cannot_be_assigned(string $role): void
     {
-        $employee = $this->createEmployee($role);
-        Filament::setCurrentPanel(Filament::getPanel('admin'));
-
-        Livewire::test(Login::class)
-            ->fillForm(['email' => $employee->email, 'password' => 'test-password'])
-            ->call('authenticate')
-            ->assertHasFormErrors(['email']);
-
-        $this->assertGuest('employee');
+        $this->expectException(\ValueError::class);
+        $this->createEmployee($role);
     }
 
-    public function test_authenticated_employee_with_disallowed_role_gets_forbidden(): void
+    public function test_authenticated_disabled_employee_gets_forbidden(): void
     {
-        $employee = $this->createEmployee('resident');
+        $employee = $this->createEmployee('staff');
+        $employee->update(['is_active' => false]);
         $this->actingAs($employee, 'employee')->get('/admin')->assertForbidden();
     }
 

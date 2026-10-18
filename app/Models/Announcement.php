@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use Database\Factories\AnnouncementFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Announcement extends Model
 {
+    /** @use HasFactory<AnnouncementFactory> */
+    use HasFactory;
+
     protected $fillable = [
         'staff_id',
         'title',

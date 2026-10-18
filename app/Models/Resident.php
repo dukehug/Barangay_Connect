@@ -2,11 +2,17 @@
 
 namespace App\Models;
 
+use Database\Factories\ResidentFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Resident extends Authenticatable
 {
+    /** @use HasFactory<ResidentFactory> */
+    use HasFactory;
+
     protected $fillable = [
         'email',
         'password',
@@ -37,6 +43,16 @@ class Resident extends Authenticatable
             'birth_date' => 'date',
             'email_verified_at' => 'datetime',
         ];
+    }
+
+    /**
+     * @return Attribute<string, never>
+     */
+    protected function fullName(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string => trim($this->first_name.' '.$this->last_name),
+        );
     }
 
     public function documentRequests(): HasMany

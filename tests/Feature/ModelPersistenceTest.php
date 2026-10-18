@@ -2,6 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Enums\ComplaintStatus;
+use App\Enums\EmployeeRole;
+use App\Enums\RequestStatus;
 use App\Models\BarangayEmployee;
 use App\Models\DocumentType;
 use App\Models\Resident;
@@ -30,7 +33,7 @@ class ModelPersistenceTest extends TestCase
             $this->assertArrayNotHasKey('remember_token', $account->toArray());
         }
 
-        $this->assertSame('staff', $staff->role);
+        $this->assertSame(EmployeeRole::Staff, $staff->role);
         $resident->email_verified_at = '2026-10-18 12:30:00';
         $resident->save();
         $resident->refresh();
@@ -62,6 +65,25 @@ class ModelPersistenceTest extends TestCase
         $log = $staff->auditLogs()->create([
             'action' => 'created', 'table_affected' => 'complaints', 'record_id' => $complaint->id,
         ]);
+
+        $this->assertSame(RequestStatus::Pending, $request->fresh()->status);
+        $this->assertSame(ComplaintStatus::Pending, $complaint->fresh()->status);
+
+        foreach (RequestStatus::cases() as $status) {
+            $request->update(['status' => $status]);
+            $this->assertDatabaseHas('document_requests', ['id' => $request->id, 'status' => $status->value]);
+            $this->assertSame($status, $request->fresh()->status);
+            $this->assertNotEmpty($request->fresh()->status->getLabel());
+            $this->assertNotEmpty($request->fresh()->status->getColor());
+        }
+
+        foreach (ComplaintStatus::cases() as $status) {
+            $complaint->update(['status' => $status]);
+            $this->assertDatabaseHas('complaints', ['id' => $complaint->id, 'status' => $status->value]);
+            $this->assertSame($status, $complaint->fresh()->status);
+            $this->assertNotEmpty($complaint->fresh()->status->getLabel());
+            $this->assertNotEmpty($complaint->fresh()->status->getColor());
+        }
 
         $this->assertTrue($announcement->fresh()->staff->is($staff));
         $this->assertTrue($staff->fresh()->announcements->sole()->is($announcement));

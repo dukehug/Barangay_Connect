@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use Database\Factories\DocumentTypeFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class DocumentType extends Model
 {
+    /** @use HasFactory<DocumentTypeFactory> */
+    use HasFactory;
+
     protected $fillable = [
         'document_type_name',
         'document_type_description',
