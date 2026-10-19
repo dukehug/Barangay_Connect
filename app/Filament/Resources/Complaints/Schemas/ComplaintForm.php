@@ -3,12 +3,14 @@
 namespace App\Filament\Resources\Complaints\Schemas;
 
 use App\Enums\ComplaintStatus;
+use App\Models\Complaint;
 use App\Models\Resident;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class ComplaintForm
 {
@@ -33,8 +35,8 @@ class ComplaintForm
                     ->default('pending')
                     ->required(),
                 FileUpload::make('attachment_url')
-                    ->disk('public')
-                    ->visibility('public')
+                    ->disk(fn (?Complaint $record): string => $record?->attachment_url && Storage::disk('local')->exists($record->attachment_url) ? 'local' : 'public')
+                    ->visibility('private')
                     ->disabled()
                     ->openable()
                     ->downloadable(),

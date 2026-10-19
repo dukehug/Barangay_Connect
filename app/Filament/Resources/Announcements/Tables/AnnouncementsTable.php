@@ -6,6 +6,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class AnnouncementsTable
@@ -33,10 +34,21 @@ class AnnouncementsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('category')
+                    ->options([
+                        'General' => 'General',
+                        'Emergency' => 'Emergency',
+                        'Event' => 'Event',
+                    ]),
+                SelectFilter::make('published')
+                    ->options([
+                        true => 'Published',
+                        false => 'Unpublished',
+                    ]),
             ])
             ->recordActions([
                 EditAction::make(), DeleteAction::make(),
-            ]);
+            ])
+            ->recordActionsColumnLabel('Actions');
     }
 }

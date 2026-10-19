@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources\Announcements\Schemas;
 
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
@@ -19,9 +18,7 @@ class AnnouncementForm
                 TextInput::make('title')
                     ->maxLength(200)
                     ->required(),
-                Textarea::make('content')
-                    ->required()
-                    ->columnSpanFull(),
+
                 Select::make('category')
                     ->required()
                     ->options([
@@ -30,8 +27,29 @@ class AnnouncementForm
                         'Event' => 'Event',
                     ])
                     ->required(),
+
                 Toggle::make('published')
                     ->default(false),
+
+                RichEditor::make('content')
+                    ->toolbarButtons([
+                        ['bold', 'italic', 'underline', 'strike', 'link'],
+                        ['h2', 'h3'],
+                        ['alignStart', 'alignCenter', 'alignEnd'],
+                        ['blockquote', 'bulletList', 'orderedList'],
+                        ['table', 'attachFiles'],
+                        ['undo', 'redo'],
+                    ])
+
+                    ->fileAttachmentsDisk('public')
+                    ->fileAttachmentsDirectory('announcements')
+                    ->fileAttachmentsVisibility('public')
+                    ->fileAttachmentsAcceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                    ->fileAttachmentsMaxSize(5120)
+                    ->preventFileAttachmentPathTampering()
+                    ->required()
+                    ->columnSpanFull(),
+
             ]);
     }
 }

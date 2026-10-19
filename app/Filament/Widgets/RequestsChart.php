@@ -18,6 +18,7 @@ class RequestsChart extends ChartWidget
         $currentMonth = now()->startOfMonth();
         $labels = [];
         $counts = [];
+        $columnSpan = 12;
 
         for ($monthsAgo = 5; $monthsAgo >= 0; $monthsAgo--) {
             $start = $currentMonth->copy()->subMonths($monthsAgo);
@@ -37,6 +38,6 @@ class RequestsChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'bar';
+        return 'line';
     }
 }

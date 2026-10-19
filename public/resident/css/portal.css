@@ -1,0 +1,75 @@
+/* Laravel portal integration. */
+
+.portal-form { display: grid; gap: 12px; margin-top: 20px; max-width: 720px; }
+.portal-form input, .portal-form select, .portal-form textarea { width: 100%; box-sizing: border-box; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font: inherit; background: #fff; color: #17243a; }
+.portal-form textarea { min-height: 130px; resize: vertical; }
+.portal-form .btn { justify-self: start; cursor: pointer; }
+.portal-message { padding: 16px; margin-bottom: 20px; background: #fff3cd; border-radius: 10px; color: #493c19; }
+.portal-table { overflow-x: auto; }
+.portal-table table { width: 100%; border-collapse: collapse; text-align: left; min-width: 580px; }
+.portal-table th, .portal-table td { padding: 16px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+.portal-table details { max-width: 380px; }
+.portal-prose { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.8; }
+.portal-pagination { display: flex; gap: 16px; align-items: center; justify-content: center; margin: 24px 0; }
+.portal-avatar { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; }
+summary { cursor: pointer; }
+.dash-page .avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+
+.dash-page main > .panel + .panel { margin-top: 24px; }
+.dash-page main > .panel { margin-bottom: 24px; }
+
+[hidden] { display: none !important; }
+.announce-filter .chip.selected { background: var(--blue); color: #fff; }
+.announce-filter a.chip { text-decoration: none; }
+.request-dialog .portal-form { margin: 20px; }
+.request-dialog select, .request-dialog textarea { width: 100%; font: inherit; }
+.request-submit { padding: 20px; }
+.documents-toolbar .btn { width: auto; align-self: end; }
+.document-dialog dd { overflow-wrap: anywhere; }
+.profile-actions form { width: 100%; }
+.profile-actions button { font: inherit; }
+
+@media (max-width: 640px) { .documents-toolbar { flex-wrap: wrap; } .document-search { min-width: 0; width: 100%; } }
+
+.dash-page .profile-grid { grid-template-columns: 290px minmax(0, 1fr); }
+.profile-details, .info-list dd { min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 1000px) { .dash-page .profile-grid { grid-template-columns: minmax(0, 1fr); } }
+.request-dialog > .portal-message { margin: 16px 20px; }
+
+/* Announcement typography uses the existing resident portal colors and spacing. */
+.announcement-content { display: flow-root; min-width: 0; color: #444; line-height: 1.8; overflow-wrap: anywhere; }
+.announcement-content-plain { white-space: pre-wrap; }
+.announcement-content > :first-child { margin-top: 0; }
+.announcement-content > :last-child { margin-bottom: 0; }
+.announcement-content p { margin: 0 0 1em; }
+.announcement-content h1, .announcement-content h2, .announcement-content h3,
+.announcement-content h4, .announcement-content h5, .announcement-content h6 { color: #252135; font-weight: 600; line-height: 1.4; margin: 1.5em 0 .65em; }
+.announcement-content h1 { font-size: 1.8rem; }
+.announcement-content h2 { font-size: 1.5rem; }
+.announcement-content h3 { font-size: 1.2rem; }
+.announcement-content h4, .announcement-content h5, .announcement-content h6 { font-size: 1rem; }
+.announcement-content ul, .announcement-content ol { margin: 0 0 1em; padding-left: 1.75em; }
+.announcement-content ul { list-style: disc outside; }
+.announcement-content ol { list-style: decimal outside; }
+.announcement-content ul ul { list-style-type: circle; }
+.announcement-content li { display: list-item; margin: .35em 0; }
+.announcement-content li > p { margin: 0; }
+.announcement-content li > ul, .announcement-content li > ol { margin-bottom: 0; }
+.announcement-content a { color: var(--blue); text-decoration: underline; text-underline-offset: .15em; }
+.announcement-content a:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.announcement-content img { display: block; max-width: 100%; height: auto; border-radius: 8px; margin: 1em 0; }
+.announcement-content figure { max-width: 100%; margin: 1.25em 0; }
+.announcement-content figcaption { font-size: .85em; color: #6b6478; text-align: center; }
+.announcement-content blockquote { border-left: 4px solid #c7bce8; margin: 1.25em 0; padding: .5em 1em; background: #f5f2fb; }
+.announcement-content blockquote p:last-child { margin-bottom: 0; }
+.announcement-content table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; margin: 1.25em 0; }
+.announcement-content th, .announcement-content td { border: 1px solid #d9d3e5; padding: .6em .85em; text-align: start; vertical-align: top; min-width: 100px; }
+.announcement-content th { background: #f5f2fb; font-weight: 600; }
+.announcement-content pre { max-width: 100%; overflow-x: auto; padding: 1em; border-radius: 8px; background: #f5f2fb; white-space: pre; }
+.announcement-content code { font-family: ui-monospace, monospace; background: #f5f2fb; padding: .1em .25em; }
+.announcement-content hr { border: 0; border-top: 1px solid #d9d3e5; margin: 1.5em 0; }
+@media (max-width: 600px) {
+  .announcement-content h1 { font-size: 1.5rem; }
+  .announcement-content h2 { font-size: 1.25rem; }
+  .announcement-content h3 { font-size: 1.1rem; }
+}

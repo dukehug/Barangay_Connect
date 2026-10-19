@@ -29,6 +29,7 @@ class DocumentRequestsTable
                 Filter::make('unassigned')->label('Unassigned')
                     ->query(fn (Builder $query): Builder => $query->whereNull('staff_id')),
             ])
-            ->recordActions([EditAction::make(), DeleteAction::make()]);
+            ->recordActions([EditAction::make(), DeleteAction::make()])
+            ->recordActionsColumnLabel('Actions');
     }
 }
