@@ -58,6 +58,10 @@
                         <dd>{{ $resident->first_name }}</dd>
                     </div>
                     <div class="info-row">
+                        <dt>Middle Name</dt>
+                        <dd>{{ $resident->middle_name ?: 'Not specified' }}</dd>
+                    </div>
+                    <div class="info-row">
                         <dt>Last Name</dt>
                         <dd>{{ $resident->last_name }}</dd>
                     </div>
@@ -107,6 +111,7 @@
             </section>
         </div>
     </div>
+
     <dialog id="photoEditor" class="photo-editor" aria-labelledby="photoEditorTitle" aria-describedby="photoEditorHelp">
         <div class="photo-editor-heading">
             <h2 id="photoEditorTitle">Edit profile photo</h2>
@@ -132,7 +137,10 @@
             <button type="button" id="savePhoto">Save photo</button>
         </div>
     </dialog>
+
+
     <footer class="profile-version">Barangay Connect · v1.0.5</footer>
+
 
     <dialog id="profileEdit" class="request-dialog" aria-labelledby="profileEditTitle"
         @if ($errors->any()) data-reopen @endif>
@@ -148,15 +156,21 @@
             @csrf
             @method('PATCH')
 
-            @foreach (['first_name' => 'First name', 'last_name' => 'Last name', 'email' => 'Email', 'contact_number' => 'Contact number', 'resident_address' => 'Address'] as $field => $label)
+            @foreach (['first_name' => 'First name', 'middle_name' => 'Middle name', 'last_name' => 'Last name', 'email' => 'Email', 'contact_number' => 'Contact number', 'resident_address' => 'Address'] as $field => $label)
                 <label for="{{ $field }}">{{ $label }}</label>
                 <input id="{{ $field }}" name="{{ $field }}"
                     type="{{ $field === 'email' ? 'email' : 'text' }}" value="{{ old($field, $resident->$field) }}"
                     @required($field !== 'contact_number')>
             @endforeach
+
+ 
+
             <label for="birth_date">Birth date</label>
-            <input type="date" id="birth_date" name="birth_date" required
+            <input type="date" id="birth_date" name="birth_date" max="{{ date('Y-m-d') }}" required
                 value="{{ old('birth_date', $resident->birth_date->format('Y-m-d')) }}">
+
+
+
             @foreach (['gender' => ['Male', 'Female'], 'marital_status' => ['Single', 'Married', 'Widowed', 'Divorced'], 'blood_type' => ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']] as $field => $options)
                 <label for="{{ $field }}">{{ Str::headline($field) }}</label>
                 <select id="{{ $field }}" name="{{ $field }}">

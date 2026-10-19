@@ -7,6 +7,7 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\SelectFilter;
 
 class ResidentsTable
 {
@@ -49,8 +50,31 @@ class ResidentsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-
+                SelectFilter::make('gender')
+                    ->options([
+                        'Male' => 'Male',
+                        'Female' => 'Female',
+                    ]),
+                SelectFilter::make('marital_status')
+                    ->options([
+                        'Single' => 'Single',
+                        'Married' => 'Married',
+                        'Widowed' => 'Widowed',
+                        'Divorced' => 'Divorced',
+                    ]),
+                SelectFilter::make('blood_type')
+                    ->options([
+                        'A+' => 'A+',
+                        'A-' => 'A-',
+                        'B+' => 'B+',
+                        'B-' => 'B-',
+                        'AB+' => 'AB+',
+                        'AB-' => 'AB-',
+                        'O+' => 'O+',
+                        'O-' => 'O-',
+                    ]),
             ])
+            ->recordActionsColumnLabel('Actions')
             ->recordActions([
                 ViewAction::make(),
                 DeleteAction::make(),
