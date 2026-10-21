@@ -52,6 +52,7 @@ return [
         'resident' => [
             'driver' => 'session',
             'provider' => 'residents',
+            'remember' => 7 * 24 * 60,
         ],
     ],
 

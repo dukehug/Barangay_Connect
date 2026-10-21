@@ -13,9 +13,14 @@ class ResidentAuthController extends Controller
 {
     public function login(Request $request): RedirectResponse
     {
-        $credentials = $request->validate(['email' => ['required', 'email'], 'password' => ['required', 'string']]);
+        $validated = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string'],
+            'remember' => ['sometimes', 'boolean'],
+        ]);
+        $credentials = ['email' => $validated['email'], 'password' => $validated['password']];
 
-        if (! Auth::guard('resident')->attempt($credentials)) {
+        if (! Auth::guard('resident')->attempt($credentials, $request->boolean('remember'))) {
             throw ValidationException::withMessages(['email' => 'The email or password is incorrect.']);
         }
 

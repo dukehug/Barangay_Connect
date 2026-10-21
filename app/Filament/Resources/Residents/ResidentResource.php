@@ -24,7 +24,7 @@ class ResidentResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
-    protected static ?string $recordTitleAttribute = 'Resident Model';
+    protected static ?string $recordTitleAttribute = 'first_name';
 
     public static function form(Schema $schema): Schema
     {

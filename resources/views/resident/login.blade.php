@@ -13,6 +13,11 @@
         <input type="password" id="password" name="password" placeholder="Enter your password"
             autocomplete="current-password" required />
 
+        <label class="remember-me" for="remember">
+            <input type="checkbox" id="remember" name="remember" value="1" @checked(old('remember')) />
+            <span>Remember me for 7 days</span>
+        </label>
+
         <button type="submit">Log In</button>
     </form>
 
