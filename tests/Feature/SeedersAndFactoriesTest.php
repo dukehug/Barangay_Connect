@@ -41,12 +41,12 @@ class SeedersAndFactoriesTest extends TestCase
         $this->seed([AdminSeeder::class, DocumentTypeSeeder::class]);
         $this->seed([AdminSeeder::class, DocumentTypeSeeder::class]);
         $this->assertDatabaseCount('barangay_employees', 1);
-        $this->assertDatabaseCount('document_types', 1);
+        $this->assertDatabaseCount('document_types', 3);
         $admin = BarangayEmployee::firstOrFail();
         $this->assertTrue($admin->isAdmin());
         $this->assertTrue($admin->is_active);
         $this->assertTrue(Hash::check('unique-test-password', $admin->password));
-        $this->assertDatabaseHas('document_types', ['document_type_name' => 'Barangay Clearance', 'document_type_fee' => 50, 'processing_days' => 5, 'is_required_other_documents' => false]);
+        $this->assertDatabaseHas('document_types', ['document_type_name' => 'Barangay Clearance', 'document_type_fee' => 50, 'processing_days' => 5, 'is_required_other_documents' => true]);
     }
 
     public function test_demo_data_spans_six_months_and_reuses_existing_related_records(): void
@@ -57,7 +57,7 @@ class SeedersAndFactoriesTest extends TestCase
         $this->seed(DemoDataSeeder::class);
         $this->assertDatabaseCount('barangay_employees', 2);
         $this->assertDatabaseCount('residents', 15);
-        $this->assertDatabaseCount('document_types', 1);
+        $this->assertDatabaseCount('document_types', 3);
         $this->assertDatabaseCount('document_requests', 30);
         $this->assertDatabaseCount('complaints', 10);
         $this->assertDatabaseCount('announcements', 6);

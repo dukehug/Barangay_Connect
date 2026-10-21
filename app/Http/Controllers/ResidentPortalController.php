@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\DocumentWorkflow;
 use App\Enums\ComplaintStatus;
 use App\Enums\RequestStatus;
 use App\Http\Requests\ResidentComplaintRequest;
-use App\Http\Requests\ResidentDocumentRequest;
 use App\Http\Requests\ResidentProfileRequest;
 use App\Models\Announcement;
+use App\Models\ComplaintType;
 use App\Models\DocumentType;
+use App\Models\ResidentDocumentUpload;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -54,6 +57,7 @@ class ResidentPortalController extends Controller
 
     public function documents(Request $request): View
     {
+        app(DocumentWorkflow::class)->expire();
         $filters = $this->recordFilters($request);
         $documents = $request->user('resident')->documentRequests()->with('documentType');
         if ($filters['search'] !== '') {
@@ -72,20 +76,10 @@ class ResidentPortalController extends Controller
         ]);
     }
 
-    public function storeDocument(ResidentDocumentRequest $request): RedirectResponse
-    {
-        $request->user('resident')->documentRequests()->create([
-            ...$request->validated(),
-            'status' => RequestStatus::Pending,
-        ]);
-
-        return redirect()->route('resident.documents')->with('status', 'Your document request has been sent to the barangay office.');
-    }
-
     public function complaints(Request $request): View
     {
         $filters = $this->recordFilters($request);
-        $complaints = $request->user('resident')->complaints();
+        $complaints = $request->user('resident')->complaints()->with('media');
         if ($filters['search'] !== '') {
             $search = $filters['search'];
             $complaints->where(function (Builder $query) use ($search): void {
@@ -96,17 +90,45 @@ class ResidentPortalController extends Controller
             });
         }
 
-        return view('resident.complaints', ['complaints' => $complaints->latest()->orderByDesc('id')->paginate($filters['per_page'])->withQueryString()]);
+        return view('resident.complaints', ['complaintTypes' => ComplaintType::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get(), 'complaints' => $complaints->latest()->orderByDesc('id')->paginate($filters['per_page'])->withQueryString()]);
+    }
+
+    public function showComplaint(Request $request, int $complaint): View
+    {
+        return view('resident.complaint-detail', ['complaint' => $request->user('resident')->complaints()->with('media')->findOrFail($complaint)]);
     }
 
     public function storeComplaint(ResidentComplaintRequest $request): RedirectResponse
     {
-        $data = $request->safe()->except('attachment');
-        $data['status'] = ComplaintStatus::Pending;
-        if ($request->hasFile('attachment')) {
-            $data['attachment_url'] = $request->file('attachment')->store('complaints', 'local');
+        $stored = null;
+        try {
+            app(DocumentWorkflow::class)->locked(function () use ($request, &$stored): void {
+                $data = $request->safe()->except(['attachment', 'uploads']);
+                $data['complaint_type_id'] = ComplaintType::where('name', $data['complaint_type'])->where('is_active', true)->firstOrFail()->id;
+                $data['status'] = ComplaintStatus::Pending;
+                $complaint = $request->user('resident')->complaints()->create($data);
+                if ($token = $request->validated('uploads.complaint_attachment')) {
+                    $upload = ResidentDocumentUpload::where('token', $token)->where('resident_id', $request->user('resident')->id)
+                        ->where('kind', 'complaint_attachment')->where('created_at', '>=', now()->subDay())->lockForUpdate()->first();
+                    $uploadedFiles = $upload?->getMedia('document');
+                    if (! $uploadedFiles || $uploadedFiles->isEmpty()) {
+                        throw ValidationException::withMessages(['uploads.complaint_attachment' => 'This upload expired. Please upload the file again.']);
+                    }
+                    foreach ($uploadedFiles as $media) {
+                        $media->update(['model_type' => $complaint->getMorphClass(), 'model_id' => $complaint->id]);
+                    }
+                    ResidentDocumentUpload::whereKey($upload->id)->delete();
+                } elseif ($request->hasFile('attachment')) {
+                    $media = $complaint->addMedia($request->file('attachment'))->toMediaCollection('document', 'private');
+                    $stored = $media->getPathRelativeToRoot();
+                }
+            });
+        } catch (\Throwable $exception) {
+            if ($stored) {
+                Storage::disk('private')->delete($stored);
+            }
+            throw $exception;
         }
-        $request->user('resident')->complaints()->create($data);
 
         return redirect()->route('resident.complaints')->with('status', 'Your complaint has been sent to the barangay office.');
     }
@@ -114,6 +136,11 @@ class ResidentPortalController extends Controller
     public function attachment(Request $request, int $complaint): StreamedResponse
     {
         $record = $request->user('resident')->complaints()->findOrFail($complaint);
+        if (! $record->attachment_url && ($media = $record->getFirstMedia('document'))) {
+            return Storage::disk('private')->response($media->getPathRelativeToRoot(), $media->file_name, [
+                'Content-Type' => $media->mime_type, 'X-Content-Type-Options' => 'nosniff', 'Cache-Control' => 'private, no-store',
+            ]);
+        }
         abort_unless($record->attachment_url, 404);
         $disk = Storage::disk('local')->exists($record->attachment_url) ? 'local' : 'public';
         abort_unless(Storage::disk($disk)->exists($record->attachment_url), 404);

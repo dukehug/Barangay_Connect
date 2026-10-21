@@ -37,13 +37,14 @@ class WorkflowDemoSeeder extends Seeder
                 'birth_date' => '1990-08-22', 'resident_address' => 'Demo address 202',
                 'password' => Str::random(40),
             ]);
-            $type = DocumentType::firstOrCreate(['document_type_name' => 'DEMO Barangay Clearance'], [
+            $type = DocumentType::firstOrCreate(['document_type_name' => 'DEMO Barangay Certification'], [
+                'category' => 'certification',
                 'document_type_description' => 'Fictional document type for workflow acceptance.',
                 'document_type_fee' => '50.00', 'is_active' => true,
                 'is_required_other_documents' => false, 'processing_days' => 3,
             ]);
 
-            foreach (RequestStatus::cases() as $status) {
+            foreach ([RequestStatus::Pending, RequestStatus::Processing, RequestStatus::Ready, RequestStatus::Released, RequestStatus::Rejected] as $status) {
                 $ana->documentRequests()->firstOrCreate(['purpose' => 'DEMO request: '.$status->value], [
                     'document_type_id' => $type->id, 'status' => $status,
                     'staff_id' => $status === RequestStatus::Pending ? null : $staff->id,

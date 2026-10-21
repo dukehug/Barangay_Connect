@@ -73,12 +73,14 @@ class ResidentPortalTest extends TestCase
     public function test_document_submission_uses_logged_in_resident_and_backend_status_is_visible(): void
     {
         $resident = Resident::factory()->create();
+        Storage::fake('local');
         $other = Resident::factory()->create();
-        $type = DocumentType::factory()->create(['is_active' => true]);
+        $type = DocumentType::factory()->create(['is_active' => true, 'category' => 'certification']);
         $this->actingAs($resident, 'resident')->post('/documents', [
             'document_type_id' => $type->id, 'purpose' => 'Employment clearance',
+            'files' => ['photo_id' => UploadedFile::fake()->image('id.jpg')],
             'resident_id' => $other->id, 'staff_id' => 999, 'status' => 'released',
-        ])->assertRedirect('/documents');
+        ])->assertSessionHasNoErrors()->assertRedirect();
         $record = DocumentRequest::sole();
         $this->assertEquals($resident->id, $record->resident_id);
         $this->assertSame(RequestStatus::Pending, $record->status);

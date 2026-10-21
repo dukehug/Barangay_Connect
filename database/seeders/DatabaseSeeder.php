@@ -8,7 +8,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->call([AdminSeeder::class, DocumentTypeSeeder::class]);
+        $this->call([AdminSeeder::class, DocumentTypeSeeder::class, ComplaintTypeSeeder::class]);
 
         if (app()->environment('local')) {
             $this->call(DemoDataSeeder::class);

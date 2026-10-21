@@ -8,6 +8,7 @@ use App\Filament\Resources\Complaints\ComplaintResource;
 use App\Filament\Resources\DocumentRequests\DocumentRequestResource;
 use App\Filament\Resources\DocumentRequests\Pages\EditDocumentRequest;
 use App\Filament\Resources\Residents\ResidentResource;
+use App\Filament\Widgets\ComplaintsTypesPieChart;
 use App\Filament\Widgets\DashboardStats;
 use App\Filament\Widgets\LatestPendingRequests;
 use App\Filament\Widgets\RequestsChart;
@@ -110,7 +111,7 @@ class DashboardWidgetsTest extends TestCase
         $this->prepareDemo();
         $record = DocumentRequest::where('status', RequestStatus::Pending)->firstOrFail();
         Livewire::test(EditDocumentRequest::class, ['record' => $record->id])
-            ->fillForm(['status' => 'processing'])->call('save')->assertHasNoFormErrors();
+            ->fillForm(['status' => 'processing', 'rbi_verified' => true])->call('save')->assertHasNoFormErrors();
         $widget = Livewire::test(DashboardStats::class);
         $stats = (new ReflectionMethod(DashboardStats::class, 'getStats'))->invoke($widget->instance());
         $this->assertSame(1, $stats[0]->getValue());
@@ -123,7 +124,7 @@ class DashboardWidgetsTest extends TestCase
         $widgets = Filament::getPanel('admin')->getWidgets();
         $this->assertNotContains(AccountWidget::class, $widgets);
         $this->assertNotContains(FilamentInfoWidget::class, $widgets);
-        $this->assertSame([DashboardStats::class, LatestPendingRequests::class, RequestsChart::class], array_values($widgets));
+        $this->assertSame([DashboardStats::class, LatestPendingRequests::class, RequestsChart::class, ComplaintsTypesPieChart::class], array_values($widgets));
         $this->get('/admin')->assertOk();
     }
 }

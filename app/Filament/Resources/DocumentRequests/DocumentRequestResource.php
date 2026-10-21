@@ -4,6 +4,7 @@ namespace App\Filament\Resources\DocumentRequests;
 
 use App\Filament\Resources\DocumentRequests\Pages\EditDocumentRequest;
 use App\Filament\Resources\DocumentRequests\Pages\ListDocumentRequests;
+use App\Filament\Resources\DocumentRequests\RelationManagers\AttachmentsRelationManager;
 use App\Filament\Resources\DocumentRequests\Schemas\DocumentRequestForm;
 use App\Filament\Resources\DocumentRequests\Tables\DocumentRequestsTable;
 use App\Models\DocumentRequest;
@@ -38,7 +39,7 @@ class DocumentRequestResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AttachmentsRelationManager::class,
         ];
     }
 

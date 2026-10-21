@@ -7,11 +7,20 @@ use Database\Factories\ComplaintFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Complaint extends Model
+class Complaint extends Model implements HasMedia
 {
     /** @use HasFactory<ComplaintFactory> */
     use HasFactory;
+
+    use InteractsWithMedia;
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('document')->useDisk('private')->acceptsMimeTypes(RequestAttachment::MIME_TYPES);
+    }
 
     /**
      * @return array<string, string>
@@ -27,10 +36,16 @@ class Complaint extends Model
         'resident_id',
         'staff_id',
         'complaint_type',
+        'complaint_type_id',
         'content',
         'attachment_url',
         'status',
     ];
+
+    public function complaintType(): BelongsTo
+    {
+        return $this->belongsTo(ComplaintType::class);
+    }
 
     public function resident(): BelongsTo
     {

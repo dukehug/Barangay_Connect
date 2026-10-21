@@ -84,8 +84,7 @@
                     <h3>Status</h3>
                     @include('resident.status', ['status' => $record->status])
                 </section>
-                <a class="btn" href="{{ route($isDocument ? 'resident.documents' : 'resident.complaints') }}">View all
-                    {{ $isDocument ? 'document requests' : 'complaints' }}</a>
+                <a class="btn" href="{{ route($isDocument ? 'resident.documents.show' : 'resident.complaints.show', $record) }}">Details</a>
             </div>
         </dialog>
     @endforeach

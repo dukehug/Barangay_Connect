@@ -37,6 +37,6 @@ class UniqueFormValidationTest extends TestCase
             'document_type_name' => $type->document_type_name,
             'is_active' => true, 'is_required_other_documents' => false,
         ])->call('create')->assertHasFormErrors(['document_type_name' => 'unique']);
-        $this->assertDatabaseCount('document_types', 1);
+        $this->assertDatabaseCount('document_types', 4);
     }
 }

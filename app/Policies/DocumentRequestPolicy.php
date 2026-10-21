@@ -29,7 +29,7 @@ class DocumentRequestPolicy
 
     public function delete(BarangayEmployee $user, DocumentRequest $record): bool
     {
-        return $user->isAdmin();
+        return false;
     }
 
     public function deleteAny(BarangayEmployee $user): bool

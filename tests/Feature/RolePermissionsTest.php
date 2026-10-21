@@ -51,8 +51,8 @@ class RolePermissionsTest extends TestCase
         $cases = [
             [$announcement, true, true, true, $isAdmin],
             [Complaint::firstOrFail(), true, false, true, $isAdmin],
-            [DocumentRequest::firstOrFail(), true, false, true, $isAdmin],
-            [DocumentType::firstOrFail(), true, true, true, false],
+            [DocumentRequest::firstOrFail(), true, false, true, false],
+            [DocumentType::whereHas('documentRequests')->firstOrFail(), true, true, true, false],
             [Resident::firstOrFail(), true, false, false, false],
             [$staff, $isAdmin, $isAdmin, $isAdmin, false],
             [$log, $isAdmin, false, false, false],
@@ -150,7 +150,7 @@ class RolePermissionsTest extends TestCase
     {
         [$admin] = $this->prepareDemo();
         $this->actingAs($admin, 'employee');
-        $used = DocumentType::firstOrFail();
+        $used = DocumentType::whereHas('documentRequests')->firstOrFail();
         Livewire::test(EditDocumentType::class, ['record' => $used->id])->assertActionHidden('delete');
         $unused = DocumentType::create(['document_type_name' => 'Unused']);
         Livewire::test(EditDocumentType::class, ['record' => $unused->id])->callAction('delete');

@@ -16,16 +16,20 @@ class DocumentRequestsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultSort('id', 'desc')
             ->columns([
+                TextColumn::make('id')->label('Request ID')->formatStateUsing(fn (int $state): string => 'DOC-'.$state)->sortable(),
                 TextColumn::make('resident.full_name')
                     ->searchable(['first_name', 'last_name']),
                 TextColumn::make('documentType.document_type_name')->searchable(),
                 TextColumn::make('status')->badge(),
+                TextColumn::make('confirmation_expires_at')->label('Confirm by')->dateTime(timezone: 'Asia/Manila')->sortable(),
                 TextColumn::make('staff.first_name')->placeholder('Unassigned'),
                 TextColumn::make('created_at')->dateTime()->sortable(),
             ])
             ->filters([
                 SelectFilter::make('status')->options(RequestStatus::class),
+                Filter::make('overdue_equipment')->label('Overdue equipment')->query(fn (Builder $query): Builder => $query->whereHas('reservations', fn (Builder $lines): Builder => $lines->where('ends_at', '<', now())->whereColumn('issued_quantity', '>', 'returned_quantity'))),
                 Filter::make('unassigned')->label('Unassigned')
                     ->query(fn (Builder $query): Builder => $query->whereNull('staff_id')),
             ])

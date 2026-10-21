@@ -35,7 +35,7 @@ class WorkflowResourcesTest extends TestCase
         Filament::setCurrentPanel(Filament::getPanel('admin'));
     }
 
-    #[TestWith([DocumentRequest::class, ListDocumentRequests::class, EditDocumentRequest::class, DocumentRequestResource::class, 'processing', 'ready', 'purpose'])]
+    #[TestWith([DocumentRequest::class, ListDocumentRequests::class, EditDocumentRequest::class, DocumentRequestResource::class, 'processing', 'awaiting_signature', 'purpose'])]
     #[TestWith([Complaint::class, ListComplaints::class, EditComplaint::class, ComplaintResource::class, 'in_progress', 'resolved', 'content'])]
     public function test_processing_preserves_original_fields_and_first_handler(string $model, string $list, string $edit, string $resource, string $next, string $later, string $content): void
     {
@@ -56,7 +56,7 @@ class WorkflowResourcesTest extends TestCase
             ->set('data.'.$content, 'Tampered')
             ->set('data.resident_id', Resident::where('id', '!=', $residentId)->firstOrFail()->id)
             ->set('data.staff_id', 999999)
-            ->fillForm(['status' => $next])->call('save')->assertHasNoFormErrors();
+            ->fillForm(['status' => $next, ...($model === DocumentRequest::class ? ['rbi_verified' => true] : [])])->call('save')->assertHasNoFormErrors();
         $record->refresh();
         $handler = $record->staff_id;
         $this->assertSame(Filament::auth()->id(), $handler);

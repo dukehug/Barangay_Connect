@@ -115,7 +115,7 @@ class AuditLoggingTest extends TestCase
         Filament::setCurrentPanel(Filament::getPanel('admin'));
         $record = DocumentRequest::where('status', 'pending')->firstOrFail();
         Livewire::test(EditDocumentRequest::class, ['record' => $record->id])
-            ->fillForm(['status' => 'processing'])->call('save')->assertHasNoFormErrors();
+            ->fillForm(['status' => 'processing', 'rbi_verified' => true])->call('save')->assertHasNoFormErrors();
         $this->assertDatabaseCount('audit_logs', 1);
         $this->assertDatabaseHas('audit_logs', ['staff_id' => $staff->id, 'action' => 'updated', 'table_affected' => 'document_requests', 'record_id' => $record->id]);
     }

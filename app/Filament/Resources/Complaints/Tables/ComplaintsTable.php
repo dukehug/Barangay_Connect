@@ -16,7 +16,12 @@ class ComplaintsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultSort('id', 'desc')
             ->columns([
+                TextColumn::make('id')
+                    ->label('Complaint ID')
+                    ->formatStateUsing(fn (int $state): string => 'CMP-'.$state)
+                    ->sortable(),
                 TextColumn::make('resident.full_name')
                     ->searchable(['first_name', 'last_name']),
                 TextColumn::make('complaint_type')->searchable(),

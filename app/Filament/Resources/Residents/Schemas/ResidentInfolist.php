@@ -24,7 +24,7 @@ class ResidentInfolist
                         ImageEntry::make('profile_image_url')
                             ->label('Profile Photo')
                             ->circular()
-                            ->defaultImageUrl(url('/profile-images/default-avatar.png')),
+                            ->defaultImageUrl(url('resident/images/profile-placeholder.svg')),
 
                         Grid::make(2)->schema([
                             TextEntry::make('full_name')
@@ -39,7 +39,6 @@ class ResidentInfolist
                         ]),
                     ])
                     ->columns(3),
-
 
                 // Chunk 2: 聯絡方式 - 另一種性質的資訊
                 Section::make('Contact Information')
@@ -58,21 +57,19 @@ class ResidentInfolist
                     ->description('Gender, birth, and personal details.')
                     ->icon('heroicon-o-user-group')
                     ->schema([
-                        TextEntry::make('gender')->badge()->color(fn($state) => $state === 'male' ? 'info' : 'pink'),
+                        TextEntry::make('gender')->badge()->color(fn ($state) => $state === 'male' ? 'info' : 'pink'),
                         TextEntry::make('birth_date')->date()->icon('heroicon-o-calendar'),
                         TextEntry::make('marital_status')->badge(),
                         TextEntry::make('blood_type')->placeholder('-')->badge()->color('danger'),
                     ])
                     ->columns(4),
 
-                
-
                 // Chunk 4: 系統資訊 - 次要資訊，放最後並且收合、灰色化
                 Section::make('System Metadata')
                     ->description('Internal records.')
                     ->icon('heroicon-o-clock')
-                    //->collapsible()
-                    //->collapsed()
+                    // ->collapsible()
+                    // ->collapsed()
                     ->schema([
                         TextEntry::make('created_at')->dateTime(),
                         TextEntry::make('updated_at')->dateTime(),

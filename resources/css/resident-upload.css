@@ -1,0 +1,10 @@
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@import '../../vendor/filament/support/resources/css/index.css';
+@import '../../vendor/filament/forms/resources/css/index.css';
+@import '../../vendor/filament/schemas/resources/css/index.css';
+@source '../../app/Livewire';
+@source '../views/livewire';
+
+/* Keep FilePond's control spacing above the portal's unlayered reset. */
+@import '../../vendor/filament/forms/dist/index.css';

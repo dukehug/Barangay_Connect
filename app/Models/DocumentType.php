@@ -14,6 +14,7 @@ class DocumentType extends Model
 
     protected $fillable = [
         'document_type_name',
+        'category',
         'document_type_description',
         'document_type_fee',
         'is_active',

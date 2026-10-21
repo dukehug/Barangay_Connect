@@ -7,6 +7,7 @@ use Database\Factories\DocumentRequestFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class DocumentRequest extends Model
 {
@@ -20,6 +21,11 @@ class DocumentRequest extends Model
     {
         return [
             'status' => RequestStatus::class,
+            'confirmation_expires_at' => 'immutable_datetime',
+            'accepted_at' => 'immutable_datetime',
+            'rbi_verified_at' => 'immutable_datetime',
+            'paid_at' => 'immutable_datetime',
+            'amount_paid' => 'decimal:2',
         ];
     }
 
@@ -28,9 +34,35 @@ class DocumentRequest extends Model
         'document_type_id',
         'staff_id',
         'purpose',
+        'category', 'application_kind', 'review_note', 'confirmation_expires_at', 'accepted_at', 'rbi_verified_at', 'official_receipt', 'amount_paid', 'paid_at',
         'status',
 
     ];
+
+    public function reservations(): HasMany
+    {
+        return $this->hasMany(RequestReservation::class);
+    }
+
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(RequestAttachment::class)->orderBy('order_column')->orderBy('id');
+    }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany(RequestEvent::class)->orderByDesc('id');
+    }
+
+    public function workflowCategory(): string
+    {
+        return $this->category ?? $this->documentType->category;
+    }
+
+    public function isEditable(): bool
+    {
+        return in_array($this->status, [RequestStatus::NeedsRevision, RequestStatus::Expired], true);
+    }
 
     public function resident(): BelongsTo
     {
