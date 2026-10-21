@@ -12,6 +12,9 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Schemas\Components\EmbeddedSchema;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\ValidationException;
@@ -19,6 +22,21 @@ use Illuminate\Validation\ValidationException;
 class EditDocumentRequest extends EditRecord
 {
     protected static string $resource = DocumentRequestResource::class;
+
+    public function getMaxContentWidth(): Width
+    {
+        return Width::Full;
+    }
+
+    public function hasFormWrapper(): bool
+    {
+        return false;
+    }
+
+    public function content(Schema $schema): Schema
+    {
+        return $schema->components([EmbeddedSchema::make('form')]);
+    }
 
     public function getTitle(): string
     {
@@ -47,7 +65,7 @@ class EditDocumentRequest extends EditRecord
         }
     }
 
-    protected function getHeaderActions(): array
+    public function getRequestActions(): array
     {
         return [
             Action::make('printDocument')->label('Print document')->url(fn (): string => route('admin.requests.print', $this->record))->openUrlInNewTab()

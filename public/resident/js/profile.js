@@ -5,6 +5,9 @@
   const photoInput = document.getElementById("photoInput");
   const placeholderPath = document.getElementById("profilePhoto").dataset.placeholder;
   const placeholderUrl = new URL(placeholderPath, document.baseURI).href;
+  const profilePicker = document.getElementById("photo");
+  const profileDialog = document.getElementById("profileEdit");
+  const preparedInput = document.querySelector('[data-cropped-photo]');
   const photoSize = 300;
 
   // Synchronize a loaded resident photo with the sidebar, preserving its default state otherwise.
@@ -35,10 +38,25 @@
   const zoom = document.getElementById("photoZoom");
   const message = document.getElementById("photoMessage");
   const error = document.getElementById("photoEditorError");
+  const status = document.getElementById("photoEditorStatus");
+  const savePhoto = document.getElementById("savePhoto");
+  const zoomOut = document.getElementById("zoomOutPhoto");
+  const zoomIn = document.getElementById("zoomInPhoto");
+  const resetPhoto = document.getElementById("resetPhoto");
+  let activePicker = photoInput;
   let source = null;
   let offsetX = 0, offsetY = 0, baseScale = 1;
   let drag = null;
   let loadVersion = 0;
+
+  function updateControls() {
+    const unavailable = !source || !context;
+    savePhoto.disabled = unavailable;
+    resetPhoto.disabled = unavailable;
+    zoom.disabled = unavailable;
+    zoomOut.disabled = unavailable || Number(zoom.value) <= Number(zoom.min);
+    zoomIn.disabled = unavailable || Number(zoom.value) >= Number(zoom.max);
+  }
 
   function draw() {
     if (!source || !context) return;
@@ -50,17 +68,28 @@
     context.fillStyle = "#fff";
     context.fillRect(0, 0, photoSize, photoSize);
     context.drawImage(source, (photoSize - width) / 2 + offsetX, (photoSize - height) / 2 + offsetY, width, height);
+    updateControls();
     document.getElementById("photoZoomValue").textContent = `${Math.round(Number(zoom.value) * 100)}%`;
   }
   function reset() { offsetX = offsetY = 0; zoom.value = "1"; draw(); }
   zoom.addEventListener("input", draw);
+  for (const [button, step] of [[zoomOut, -0.1], [zoomIn, 0.1]]) {
+    button.addEventListener("click", () => {
+      zoom.value = Math.max(Number(zoom.min), Math.min(Number(zoom.max), Number(zoom.value) + step));
+      draw();
+    });
+  }
   document.getElementById("resetPhoto").addEventListener("click", reset);
   for (const id of ["closePhotoEditor", "cancelPhoto"]) {
     document.getElementById(id).addEventListener("click", () => editor.close());
   }
   editor.addEventListener("close", () => {
-    source = null; drag = null; photoInput.value = "";
-    photoInput.focus();
+    loadVersion += 1;
+    source = null;
+    drag = null;
+    activePicker.value = "";
+    updateControls();
+    activePicker.focus();
   });
   canvas.addEventListener("pointerdown", event => {
     if (event.button !== 0 || drag) return;
@@ -94,45 +123,60 @@
       const buffer = Uint8Array.from(bytes, char => char.charCodeAt(0));
       const transfer = new DataTransfer();
       transfer.items.add(new File([buffer], 'profile.jpg', { type: 'image/jpeg' }));
-      document.querySelector('[data-cropped-photo]').files = transfer.files;
+      preparedInput.files = transfer.files;
       profilePhoto.src = data;
       message.textContent = "Photo prepared. Save your profile to upload it.";
+      document.getElementById("preparedPhoto").src = data;
+      document.getElementById("profilePhotoPreview").hidden = false;
+      document.getElementById("profilePhotoMessage").textContent = "";
       editor.close();
-      document.getElementById("profileEdit").showModal();
+      if (!profileDialog.open) profileDialog.showModal();
     } catch {
       error.textContent = "Unable to prepare your photo. Your previous photo is unchanged. Please try again.";
     }
   });
-  photoInput.addEventListener("change", () => {
-    const file = photoInput.files[0];
-    if (!file) return;
-    const version = ++loadVersion;
-    message.textContent = "";
-    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 5 * 1024 * 1024) {
-      message.textContent = "Choose a JPG, PNG, or WebP image up to 5 MB.";
-      photoInput.value = ""; return;
-    }
-    const url = URL.createObjectURL(file);
-    const image = new Image();
-    image.onload = () => {
-      URL.revokeObjectURL(url);
-      if (version !== loadVersion) return;
-      if (!context || !image.naturalWidth || !image.naturalHeight) {
-        message.textContent = "Photo editing is unavailable for this image.";
-        photoInput.value = ""; return;
+  for (const picker of [photoInput, profilePicker]) {
+    picker.addEventListener("change", () => {
+      const file = picker.files[0];
+      if (!file) return;
+      activePicker = picker;
+      const selectionMessage = picker === photoInput ? message : document.getElementById("profilePhotoMessage");
+      const version = ++loadVersion;
+      selectionMessage.textContent = "";
+      if (!["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 5 * 1024 * 1024) {
+        selectionMessage.textContent = "Choose a JPG, PNG, or WebP image up to 5 MB.";
+        picker.value = "";
+        return;
       }
-      source = image;
-      baseScale = Math.max(photoSize / image.naturalWidth, photoSize / image.naturalHeight);
+      source = null;
       error.textContent = "";
-      reset();
+      status.textContent = "Loading your photo…";
+      context?.clearRect(0, 0, photoSize, photoSize);
+      updateControls();
       editor.showModal();
-    };
-    image.onerror = () => {
-      URL.revokeObjectURL(url);
-      if (version !== loadVersion) return;
-      message.textContent = "This image could not be opened. Please choose another photo.";
-      photoInput.value = "";
-    };
-    image.src = url;
-  });
+      const url = URL.createObjectURL(file);
+      const image = new Image();
+      image.onload = () => {
+        URL.revokeObjectURL(url);
+        if (version !== loadVersion) return;
+        status.textContent = "";
+        if (!context || !image.naturalWidth || !image.naturalHeight) {
+          error.textContent = "Photo editing is unavailable for this image. Cancel and choose another photo.";
+          return;
+        }
+        source = image;
+        baseScale = Math.max(photoSize / image.naturalWidth, photoSize / image.naturalHeight);
+        reset();
+        status.textContent = "Drag the photo to reposition it. Use − / + or the slider to zoom, then select Use this photo.";
+        canvas.focus();
+      };
+      image.onerror = () => {
+        URL.revokeObjectURL(url);
+        if (version !== loadVersion) return;
+        status.textContent = "";
+        error.textContent = "This image could not be opened. Cancel and choose another photo.";
+      };
+      image.src = url;
+    });
+  }
 })();

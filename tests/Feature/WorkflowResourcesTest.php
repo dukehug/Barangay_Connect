@@ -71,6 +71,17 @@ class WorkflowResourcesTest extends TestCase
             ->fillForm(['status' => $later])->call('save')->assertHasNoFormErrors();
         $this->assertSame($handler, $record->fresh()->staff_id);
         $this->assertSame($later, $record->fresh()->status->value);
+
+        if ($model === DocumentRequest::class) {
+            $this->assertSame($second->id, $record->fresh()->latestStaffEvent->staff->id);
+            Livewire::test($list)->assertSee($second->getFilamentName());
+            Livewire::test($edit, ['record' => $record->getRouteKey()])
+                ->assertSee($second->getFilamentName())
+                ->assertDontSee('Staff #'.$second->id);
+
+            $record->events()->create(['action' => 'System event']);
+            $this->assertSame($second->id, $record->fresh()->latestStaffEvent->staff->id);
+        }
     }
 
     #[TestWith([DocumentRequest::class, ListDocumentRequests::class, DocumentRequestResource::class])]

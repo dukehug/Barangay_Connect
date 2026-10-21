@@ -43,7 +43,9 @@ class AttachmentsRelationManager extends RelationManager
         return $table->recordTitleAttribute('name')
             ->modifyQueryUsing(fn (Builder $query): Builder => $query->with('media'))
             ->defaultSort('order_column')->reorderable('order_column')
-            ->contentGrid(['md' => 2, 'xl' => 3])
+            ->heading('Attachments')
+            ->emptyStateDescription('No uploaded attachments. Verify any office paper records before proceeding.')
+            ->contentGrid(['md' => 2])
             ->columns([
                 Stack::make([
                     ViewColumn::make('preview')->view('filament.requests.attachment-preview'),

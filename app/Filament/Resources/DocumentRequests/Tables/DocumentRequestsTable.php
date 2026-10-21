@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\DocumentRequests\Tables;
 
 use App\Enums\RequestStatus;
+use App\Models\DocumentRequest;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -17,13 +18,17 @@ class DocumentRequestsTable
     {
         return $table
             ->defaultSort('id', 'desc')
+            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with('latestStaffEvent.staff'))
             ->columns([
                 TextColumn::make('id')->label('Request ID')->formatStateUsing(fn (int $state): string => 'DOC-'.$state)->sortable(),
                 TextColumn::make('resident.full_name')
                     ->searchable(['first_name', 'last_name']),
                 TextColumn::make('documentType.document_type_name')->searchable(),
                 TextColumn::make('status')->badge(),
-                TextColumn::make('confirmation_expires_at')->label('Confirm by')->dateTime(timezone: 'Asia/Manila')->sortable(),
+                TextColumn::make('updated_by')->label('Updated by')
+                    ->state(fn (DocumentRequest $record): ?string => $record->latestStaffEvent?->staff?->getFilamentName())
+                    ->placeholder('No staff updates'),
+                TextColumn::make('confirmation_expires_at')->label('Confirmation deadline')->dateTime(timezone: 'Asia/Manila')->sortable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('staff.first_name')->placeholder('Unassigned'),
                 TextColumn::make('created_at')->dateTime()->sortable(),
             ])

@@ -14,6 +14,11 @@ class RequestEvent extends Model
         return ['details' => 'array'];
     }
 
+    public function staff(): BelongsTo
+    {
+        return $this->belongsTo(BarangayEmployee::class, 'staff_id');
+    }
+
     public function documentRequest(): BelongsTo
     {
         return $this->belongsTo(DocumentRequest::class);

@@ -4,10 +4,12 @@ namespace App\Models;
 
 use App\Enums\RequestStatus;
 use Database\Factories\DocumentRequestFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class DocumentRequest extends Model
 {
@@ -52,6 +54,14 @@ class DocumentRequest extends Model
     public function events(): HasMany
     {
         return $this->hasMany(RequestEvent::class)->orderByDesc('id');
+    }
+
+    public function latestStaffEvent(): HasOne
+    {
+        return $this->hasOne(RequestEvent::class)->ofMany(
+            ['id' => 'max'],
+            fn (Builder $query): Builder => $query->whereNotNull('staff_id'),
+        );
     }
 
     public function workflowCategory(): string

@@ -40,6 +40,7 @@ class Complaint extends Model implements HasMedia
         'content',
         'attachment_url',
         'status',
+        'review_note',
     ];
 
     public function complaintType(): BelongsTo

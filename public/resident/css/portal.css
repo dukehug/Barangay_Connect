@@ -1080,3 +1080,256 @@ summary {
 .attachment-info h3 a:hover {
     text-decoration: underline;
 }
+
+/* Shared, sectioned layouts for resident registration and profile editing. */
+.login-card.register-card {
+    max-width: 1080px;
+    padding: 28px;
+    border-radius: 20px;
+    box-shadow: 0 24px 70px rgb(23 36 58 / 18%);
+}
+.register-card .intro {
+    margin-bottom: 24px;
+    color: #64748b;
+    font-size: 0.875rem;
+}
+.profile-edit-dialog {
+    width: min(1080px, calc(100% - 32px));
+    border-radius: 18px;
+    background: #f8fafc;
+    box-shadow: 0 24px 70px rgb(23 36 58 / 24%);
+}
+.profile-edit-dialog .request-dialog-header {
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 28px;
+}
+.profile-edit-dialog .request-dialog-header h2 {
+    font-size: 1.2rem;
+    color: #17243a;
+}
+.profile-edit-dialog .request-dialog-header p {
+    margin-top: 4px;
+    color: #64748b;
+    font-size: 0.8rem;
+}
+.profile-edit-dialog .request-dialog-header button {
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 1.5rem;
+}
+.profile-edit-dialog .resident-details-form {
+    display: block;
+    max-width: none;
+    margin: 0;
+    padding: 24px 28px 0;
+}
+.resident-section-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+}
+.resident-section-stack {
+    display: grid;
+    gap: 20px;
+    min-width: 0;
+}
+.resident-form-section {
+    min-width: 0;
+    padding: 22px;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    background: #fff;
+    text-align: left;
+}
+.resident-section-heading {
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #edf1f7;
+}
+.resident-section-heading h2,
+.resident-section-heading h3 {
+    margin: 0;
+    color: #17243a;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+.resident-section-heading p,
+.resident-field-hint {
+    margin-top: 6px;
+    color: #64748b;
+    font-size: 0.75rem;
+    line-height: 1.6;
+}
+.resident-field-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+.resident-name-grid > :last-child {
+    grid-column: 1 / -1;
+}
+.resident-field,
+.resident-field-grid > div {
+    min-width: 0;
+}
+.resident-form-section > .resident-field + .resident-field-grid {
+    margin-top: 16px;
+}
+.resident-form-section > :last-child {
+    margin-bottom: 0;
+}
+.resident-details-form label {
+    margin: 0 0 7px;
+    color: #334155;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+.resident-details-form input,
+.resident-details-form select {
+    width: 100%;
+    min-width: 0;
+    height: 42px;
+    margin: 0;
+    padding: 9px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    color: #17243a;
+    background-color: #fff;
+    font: inherit;
+    font-size: 0.8rem;
+}
+.resident-details-form select {
+    padding-right: 34px;
+}
+.resident-details-form input::placeholder {
+    color: #94a3b8;
+    font-size: 0.75rem;
+}
+.resident-details-form input[type="file"] {
+    height: auto;
+    padding: 10px;
+    font-size: 0.75rem;
+}
+.resident-details-form select:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+}
+.resident-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+    padding: 20px 0;
+    border-top: 1px solid #e2e8f0;
+}
+.resident-form-actions button,
+.resident-form-actions .btn {
+    width: auto;
+    height: auto;
+    min-height: 42px;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+}
+.resident-form-actions .resident-secondary-action {
+    color: #475569;
+    background: transparent;
+    font-size: 0.8rem;
+}
+.resident-form-actions button.resident-secondary-action {
+    border: 1px solid #cbd5e1;
+    background: #fff;
+}
+.resident-form-actions button.resident-secondary-action:hover {
+    background: #f1f5f9;
+}
+.register-card .resident-form-actions {
+    justify-content: space-between;
+    padding-bottom: 0;
+}
+@media (max-width: 760px) {
+    .resident-section-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .login-card.register-card {
+        padding: 24px 16px;
+    }
+    .profile-edit-dialog .request-dialog-header {
+        padding: 16px;
+    }
+    .profile-edit-dialog .resident-details-form {
+        padding: 16px 16px 0;
+    }
+    .resident-form-section {
+        padding: 18px;
+    }
+}
+@media (max-width: 480px) {
+    .resident-field-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .resident-name-grid > :last-child {
+        grid-column: auto;
+    }
+    .resident-form-actions {
+        flex-wrap: wrap;
+    }
+    .resident-form-actions button,
+    .resident-form-actions .btn {
+        flex: 1 1 auto;
+    }
+    .register-card .resident-form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+        text-align: center;
+    }
+}
+
+.photo-zoom-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+.photo-zoom-controls button {
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    font-size: 1.3rem;
+    color: #334155;
+    background: #f1f5f9;
+}
+.photo-zoom-controls #photoZoom {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+}
+.photo-editor button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+.profile-photo-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: 10px;
+    background: #eef6f1;
+    color: #23583b;
+    font-size: 0.75rem;
+    line-height: 1.6;
+}
+.profile-photo-preview img {
+    flex: 0 0 64px;
+    border-radius: 50%;
+    object-fit: cover;
+}
