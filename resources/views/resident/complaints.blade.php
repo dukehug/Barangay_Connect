@@ -38,12 +38,12 @@
                         <tr>
                             <td>
                                 <a class="document-name" href="{{ route('resident.complaints.show', $complaint) }}">{{ $complaint->complaint_type }}</a>
-                                <span class="document-reference">CMP-{{ $complaint->id }}</span>
+                                <span class="document-reference">{{ $complaint->reference }}</span>
                                 <span class="document-purpose">{{ Str::limit($complaint->content, 65) }}</span>
                             </td>
                             <td class="document-date">{{ $complaint->created_at->format('M d, Y') }}</td>
                             <td><div class="document-state" data-status="{{ $complaint->status->value }}">@include('resident.status', ['status' => $complaint->status])</div></td>
-                            <td class="document-action"><a class="document-details-button" href="{{ route('resident.complaints.show', $complaint) }}" aria-label="View CMP-{{ $complaint->id }}">View details <span aria-hidden="true">→</span></a></td>
+                            <td class="document-action"><a class="document-details-button" href="{{ route('resident.complaints.show', $complaint) }}" aria-label="View {{ $complaint->reference }}">View details <span aria-hidden="true">→</span></a></td>
                         </tr>
                     @empty
                         <tr><td colspan="4" class="documents-empty">

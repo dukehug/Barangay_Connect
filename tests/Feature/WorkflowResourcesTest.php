@@ -90,13 +90,17 @@ class WorkflowResourcesTest extends TestCase
     {
         $pending = $model::where('status', 'pending')->get();
         $assigned = $model::whereNotNull('staff_id')->get();
-        Livewire::test($list)->assertSuccessful()
+        $page = Livewire::test($list)->assertSuccessful()
             ->assertSee('Ana DemoSantos')->assertSee('Unassigned')
             ->assertActionDoesNotExist('create')
-            ->assertTableActionHidden('delete', $pending->first())
             ->searchTable('DemoCruz')
             ->assertCanSeeTableRecords($pending->where('resident_id', $pending->last()->resident_id))
             ->assertCanNotSeeTableRecords($assigned);
+        if ($model === Complaint::class) {
+            $page->assertTableActionDoesNotExist('delete');
+        } else {
+            $page->assertTableActionHidden('delete', $pending->first());
+        }
         Livewire::test($list)->filterTable('status', 'pending')
             ->assertCanSeeTableRecords($pending)->assertCanNotSeeTableRecords($assigned);
         Livewire::test($list)->filterTable('unassigned')

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Complaints\Tables;
 
 use App\Enums\ComplaintStatus;
+use App\Models\Complaint;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -17,15 +18,19 @@ class ComplaintsTable
     {
         return $table
             ->defaultSort('id', 'desc')
+            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with('latestStaffUpdate.staff'))
             ->columns([
-                TextColumn::make('id')
+                TextColumn::make('reference')
                     ->label('Complaint ID')
-                    ->formatStateUsing(fn (int $state): string => 'CMP-'.$state)
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('resident.full_name')
                     ->searchable(['first_name', 'last_name']),
                 TextColumn::make('complaint_type')->searchable(),
                 TextColumn::make('status')->badge(),
+                TextColumn::make('updated_by')->label('Updated by')
+                    ->state(fn (Complaint $record): ?string => $record->latestStaffUpdate?->staff?->getFilamentName())
+                    ->placeholder('No staff updates'),
                 TextColumn::make('staff.first_name')->placeholder('Unassigned'),
                 TextColumn::make('created_at')->dateTime()->sortable(),
             ])

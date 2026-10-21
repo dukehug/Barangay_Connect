@@ -25,7 +25,7 @@
             @php
                 $isDocument = $record instanceof \App\Models\DocumentRequest;
                 $kind = $isDocument ? 'documents' : 'complaints';
-                $reference = ($isDocument ? 'DOC-' : 'CMP-') . $record->id;
+                $reference = $record->reference;
                 $title = $isDocument ? $record->documentType->document_type_name : $record->complaint_type;
                 $content = $isDocument ? $record->purpose : $record->content;
             @endphp
@@ -54,7 +54,7 @@
         complaints will appear here.</p>
     @foreach ($activity as $record)
         @php($isDocument = $record instanceof \App\Models\DocumentRequest)
-        @php($reference = ($isDocument ? 'DOC-' : 'CMP-') . $record->id)
+        @php($reference = $record->reference)
         <dialog id="activity-{{ $reference }}" class="activity-drawer"
             aria-labelledby="activity-title-{{ $reference }}">
             <div class="drawer-header">

@@ -1,8 +1,8 @@
 @extends('layouts.resident')
-@section('title', 'DOC-'.$document->id)
+@section('title', $document->reference)
 @section('main-class', 'documents-main')
 @section('content')
-    <section class="greeting page-head"><div><h1>DOC-{{ $document->id }}</h1><p>{{ $document->documentType->document_type_name }}</p></div><a href="{{ route('resident.documents') }}">Back to My Documents</a></section>
+    <section class="greeting page-head"><div><h1>{{ $document->reference }}</h1><p>{{ $document->documentType->document_type_name }}</p></div><a href="{{ route('resident.documents') }}">Back to My Documents</a></section>
     <section class="workflow-card">
         <div class="document-state" data-status="{{ $document->status->value }}">@include('resident.status', ['status' => $document->status])</div>
         <h2>Application details</h2>
@@ -36,7 +36,7 @@
         @if($document->isEditable())<a class="request-new" href="{{ route('resident.documents.edit', $document) }}">Revise and resubmit</a>@endif
         @if(in_array($document->status, [\App\Enums\RequestStatus::Pending, \App\Enums\RequestStatus::NeedsRevision, \App\Enums\RequestStatus::Expired, \App\Enums\RequestStatus::AwaitingConfirmation, \App\Enums\RequestStatus::AwaitingPayment], true))
             <form method="POST" action="{{ route('resident.documents.respond', $document) }}" data-confirm-cancel>@csrf<input type="hidden" name="action" value="cancel"><button type="submit">Cancel request</button></form>
-        @else <p>For any changes, contact the Barangay Office and quote DOC-{{ $document->id }}.</p>@endif
+        @else <p>For any changes, contact the Barangay Office and quote {{ $document->reference }}.</p>@endif
     </div></section>
     @include('resident.attachment-gallery')
     <details class="workflow-card workflow-disclosure"><summary>Application history</summary><ol class="workflow-history">@forelse($document->events as $event)<li><strong>{{ $event->action }}</strong><span>{{ $event->created_at->setTimezone('Asia/Manila')->format('M d, Y H:i') }}</span>@if($event->note)<p class="portal-prose">{{ $event->note }}</p>@endif</li>@empty<li>Existing application. New updates will appear here.</li>@endforelse</ol></details>

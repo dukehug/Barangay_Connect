@@ -20,7 +20,7 @@ class DocumentRequestsTable
             ->defaultSort('id', 'desc')
             ->modifyQueryUsing(fn (Builder $query): Builder => $query->with('latestStaffEvent.staff'))
             ->columns([
-                TextColumn::make('id')->label('Request ID')->formatStateUsing(fn (int $state): string => 'DOC-'.$state)->sortable(),
+                TextColumn::make('reference')->label('Request ID')->searchable()->sortable(),
                 TextColumn::make('resident.full_name')
                     ->searchable(['first_name', 'last_name']),
                 TextColumn::make('documentType.document_type_name')->searchable(),

@@ -64,7 +64,7 @@ class ResidentPortalController extends Controller
             $search = $filters['search'];
             $documents->where(function (Builder $query) use ($search): void {
                 $query->where('purpose', 'like', '%'.$search.'%')
-                    ->orWhere('id', preg_replace('/^DOC-/i', '', $search))
+                    ->orWhere('reference', 'like', '%'.strtoupper($search).'%')
                     ->orWhereHas('documentType', fn (Builder $type): Builder => $type->where('document_type_name', 'like', '%'.$search.'%'))
                     ->orWhereIn('status', $this->matchingStatuses(RequestStatus::cases(), $search));
             });
@@ -85,7 +85,7 @@ class ResidentPortalController extends Controller
             $complaints->where(function (Builder $query) use ($search): void {
                 $query->where('content', 'like', '%'.$search.'%')
                     ->orWhere('complaint_type', 'like', '%'.$search.'%')
-                    ->orWhere('id', preg_replace('/^CMP-/i', '', $search))
+                    ->orWhere('reference', 'like', '%'.strtoupper($search).'%')
                     ->orWhereIn('status', $this->matchingStatuses(ComplaintStatus::cases(), $search));
             });
         }

@@ -1,8 +1,8 @@
 @extends('layouts.resident')
-@section('title', 'CMP-'.$complaint->id)
+@section('title', $complaint->reference)
 @section('main-class', 'documents-main')
 @section('content')
-    <section class="greeting page-head"><div><h1>CMP-{{ $complaint->id }}</h1><p>{{ $complaint->complaint_type }}</p></div><a href="{{ route('resident.complaints') }}">Back to My Complaints</a></section>
+    <section class="greeting page-head"><div><h1>{{ $complaint->reference }}</h1><p>{{ $complaint->complaint_type }}</p></div><a href="{{ route('resident.complaints') }}">Back to My Complaints</a></section>
     <section class="workflow-card">
         <div class="document-state" data-status="{{ $complaint->status->value }}">@include('resident.status', ['status' => $complaint->status])</div>
         @if($complaint->review_note)

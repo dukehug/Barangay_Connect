@@ -4,7 +4,7 @@
 <div style="display: grid; gap: 1.5rem; line-height: 1.6; overflow-wrap: anywhere;">
     <section>
         <h3><strong>Office record</strong></h3>
-        <p>DOC-{{ $document->id }} · {{ $document->status->getLabel() }} @if($document->application_kind) · {{ ucfirst($document->application_kind) }} application @endif</p>
+        <p>{{ $document->reference }} · {{ $document->status->getLabel() }} @if($document->application_kind) · {{ ucfirst($document->application_kind) }} application @endif</p>
         @if($document->workflowCategory() === 'clearance')<p>Review → office payment and OR → print → pickup → release.</p>@endif
         @if($document->workflowCategory() === 'certification')<p>Manually verify RBI registration (8 months) → print → officer signature → pickup → release.</p>@endif
         @if($document->rbi_verified_at)<p>RBI eligibility verified: {{ $document->rbi_verified_at->setTimezone('Asia/Manila')->format('M d Y H:i') }}</p>@endif

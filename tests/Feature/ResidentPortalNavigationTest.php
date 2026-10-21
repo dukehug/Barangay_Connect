@@ -24,10 +24,10 @@ class ResidentPortalNavigationTest extends TestCase
         DocumentRequest::factory()->create(['document_type_id' => $type->id, 'purpose' => 'Private request', 'status' => RequestStatus::Ready]);
         $this->actingAs($resident, 'resident');
 
-        foreach (['Residency', 'DOC-'.$document->id, 'Ready for pickup', 'School'] as $search) {
+        foreach (['Residency', $document->reference, 'Ready for pickup', 'School'] as $search) {
             $this->get(route('resident.documents', ['search' => $search]))->assertOk()->assertSee('School enrollment')->assertDontSee('Private request');
         }
-        $this->get(route('resident.documents', ['search' => 'unmatched']))->assertOk()->assertSee('No document requests found.')->assertDontSee('School enrollment');
+        $this->get(route('resident.documents', ['search' => 'unmatched']))->assertOk()->assertSee('No matching requests')->assertDontSee('School enrollment');
     }
 
     public function test_complaint_search_matches_category_reference_and_status_with_resident_isolation(): void
@@ -37,10 +37,10 @@ class ResidentPortalNavigationTest extends TestCase
         Complaint::factory()->create(['complaint_type' => 'Sanitation', 'content' => 'Private complaint', 'status' => ComplaintStatus::InProgress]);
         $this->actingAs($resident, 'resident');
 
-        foreach (['Sanitation', 'CMP-'.$complaint->id, 'In progress', 'Missed'] as $search) {
+        foreach (['Sanitation', $complaint->reference, 'In progress', 'Missed'] as $search) {
             $this->get(route('resident.complaints', ['search' => $search]))->assertOk()->assertSee('Missed collection')->assertDontSee('Private complaint');
         }
-        $this->get(route('resident.complaints', ['search' => 'unmatched']))->assertOk()->assertSee('No complaints found.');
+        $this->get(route('resident.complaints', ['search' => 'unmatched']))->assertOk()->assertSee('No matching complaints');
     }
 
     public function test_search_pagination_preserves_filters_and_validates_page_size(): void

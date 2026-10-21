@@ -39,13 +39,13 @@
                         <tr>
                             <td>
                                 <a class="document-name" href="{{ route('resident.documents.show', $document) }}">{{ $document->documentType->document_type_name }}</a>
-                                <span class="document-reference">DOC-{{ $document->id }}</span>
+                                <span class="document-reference">{{ $document->reference }}</span>
                                 <span class="document-purpose">{{ Str::limit($document->purpose, 65) }}</span>
                             </td>
                             <td class="document-date">{{ $document->created_at->format('M d, Y') }}</td>
                             <td><div class="document-state" data-status="{{ $document->status->value }}">@include('resident.status', ['status' => $document->status])</div></td>
                             <td class="document-action">
-                                <a class="document-details-button" href="{{ route('resident.documents.show', $document) }}" aria-label="View DOC-{{ $document->id }}">
+                                <a class="document-details-button" href="{{ route('resident.documents.show', $document) }}" aria-label="View {{ $document->reference }}">
                                     {{ match ($document->status) {
                                         \App\Enums\RequestStatus::NeedsRevision, \App\Enums\RequestStatus::Expired => 'Review & revise',
                                         \App\Enums\RequestStatus::AwaitingConfirmation => 'Review offer',

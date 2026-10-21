@@ -4,7 +4,7 @@
 @section('uses-resident-upload', true)
 @section('content')
     <section class="greeting page-head">
-        <div><h1>{{ $document->exists ? 'Revise DOC-'.$document->id : 'New Application' }}</h1><p>Choose a document, add details, then submit.</p></div>
+        <div><h1>{{ $document->exists ? 'Revise '.$document->reference : 'New Application' }}</h1><p>Choose a document, add details, then submit.</p></div>
         <a href="{{ $document->exists ? route('resident.documents.show', $document) : route('resident.documents') }}">Back to requests</a>
     </section>
     <form class="workflow-form" data-document-form data-resident-uploads method="POST" enctype="multipart/form-data" action="{{ $document->exists ? route('resident.documents.update', $document) : route('resident.documents.store') }}">

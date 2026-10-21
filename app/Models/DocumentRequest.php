@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\RequestStatus;
+use App\RequestReference;
 use Database\Factories\DocumentRequestFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,6 +16,13 @@ class DocumentRequest extends Model
 {
     /** @use HasFactory<DocumentRequestFactory> */
     use HasFactory;
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $record): void {
+            $record->reference = app(RequestReference::class)->generate($record->getAttributes()['created_at'] ?? null);
+        });
+    }
 
     /**
      * @return array<string, string>

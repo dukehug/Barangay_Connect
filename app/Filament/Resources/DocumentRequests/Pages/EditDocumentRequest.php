@@ -40,7 +40,7 @@ class EditDocumentRequest extends EditRecord
 
     public function getTitle(): string
     {
-        return 'DOC-'.$this->record->id.' · '.$this->record->resident->full_name;
+        return $this->record->reference.' · '.$this->record->resident->full_name;
     }
 
     protected function mutateFormDataBeforeFill(array $data): array

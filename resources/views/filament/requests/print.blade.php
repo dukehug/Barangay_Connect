@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>DOC-{{ $document->id }} — {{ $document->documentType->document_type_name }}</title>
+    <title>{{ $document->reference }} — {{ $document->documentType->document_type_name }}</title>
     <style>
         body { font: 16px/1.7 Georgia, serif; color: #182a3b; background: #edf1f5; margin: 0; }
         main { box-sizing: border-box; max-width: 210mm; min-height: 270mm; padding: 22mm; background: white; margin: 24px auto; }
@@ -21,7 +21,7 @@
     <main>
         <header>Republic of the Philippines<br><strong>{{ config('barangay.office_name', 'Barangay Office') }}</strong></header>
         <h1>{{ $document->documentType->document_type_name }}</h1>
-        <p>Reference: <strong>DOC-{{ $document->id }}</strong><br>Date printed: {{ now()->setTimezone('Asia/Manila')->format('F d, Y') }}</p>
+        <p>Reference: <strong>{{ $document->reference }}</strong><br>Date printed: {{ now()->setTimezone('Asia/Manila')->format('F d, Y') }}</p>
         <p>Issued upon the request of the applicant named below for the stated purpose.</p>
         <dl><div><dt>Applicant</dt><dd>{{ $document->resident->full_name }}</dd></div><div><dt>Address</dt><dd>{{ $document->resident->resident_address }}</dd></div><div><dt>Purpose</dt><dd>{{ $document->purpose }}</dd></div></dl>
         @if($document->workflowCategory() === 'use_closure')
@@ -33,7 +33,7 @@
         @endif
         @if($document->official_receipt)<p>Official Receipt: {{ $document->official_receipt }}<br>Amount paid: ₱{{ $document->amount_paid }}</p>@endif
         <div class="signature">________________________________<br>Barangay Officer<br>Signature over printed name</div>
-        <footer>DOC-{{ $document->id }} · {{ config('barangay.office_name', 'Barangay Office') }}</footer>
+        <footer>{{ $document->reference }} · {{ config('barangay.office_name', 'Barangay Office') }}</footer>
     </main>
     <script>document.getElementById('print-document').addEventListener('click', () => window.print());</script>
 </body>

@@ -23,7 +23,7 @@ class ComplaintResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $recordTitleAttribute = 'id';
+    protected static ?string $recordTitleAttribute = 'reference';
 
     public static function form(Schema $schema): Schema
     {

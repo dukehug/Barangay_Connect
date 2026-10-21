@@ -10,7 +10,7 @@
 <div style="display: grid; gap: 1.5rem; line-height: 1.6; overflow-wrap: anywhere;">
     <section>
         <h3><strong>Office record</strong></h3>
-        <p>CMP-{{ $complaint->id }} · {{ $complaint->status->getLabel() }}</p>
+        <p>{{ $complaint->reference }} · {{ $complaint->status->getLabel() }}</p>
         <p>Assigned staff: {{ $complaint->staff?->getFilamentName() ?? 'Unassigned' }}</p>
         <p>Submitted: {{ $complaint->created_at->setTimezone('Asia/Manila')->format('M d Y H:i') }}</p>
         <p>Last updated: {{ $complaint->updated_at->setTimezone('Asia/Manila')->format('M d Y H:i') }}</p>

@@ -25,7 +25,7 @@ class ResourceAvailability
         foreach ($reservations as $line) {
             $request = $line->documentRequest;
             $overlaps = $line->starts_at < $end && $line->ends_at > $start;
-            $reference = 'DOC-'.$request->id;
+            $reference = $request->reference;
             if ($request->status === RequestStatus::Pending && $overlaps) {
                 $pending[] = $reference.' requests '.$line->requested_quantity.' ('.$this->period($line).')';
             }

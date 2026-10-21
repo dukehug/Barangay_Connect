@@ -31,7 +31,7 @@ class EditComplaint extends EditRecord
 
     public function getTitle(): string
     {
-        return 'CMP-'.$this->record->id.' · '.($this->record->resident?->full_name ?? 'Unknown resident');
+        return $this->record->reference.' · '.($this->record->resident?->full_name ?? 'Unknown resident');
     }
 
     public function getBreadcrumb(): string
