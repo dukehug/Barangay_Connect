@@ -11,8 +11,6 @@ class ComplaintsTypesPieChart extends ChartWidget
 
     protected ?string $heading = 'Complaints by type';
 
-    protected ?string $description = 'All complaints · All statuses · All time';
-
     protected function getData(): array
     {
         $typeName = "COALESCE(complaint_types.name, NULLIF(TRIM(complaints.complaint_type), ''), 'Uncategorized')";

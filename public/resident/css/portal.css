@@ -391,8 +391,42 @@ summary {
     text-decoration: none;
 }
 .document-status {
-    background: #eef3f8;
-    color: #284867;
+    border: 1px solid transparent;
+    background: #6c757d;
+    color: #fff;
+}
+.document-status.status-primary {
+    background: #0d6efd;
+    color: #fff;
+}
+.document-status.status-secondary {
+    background: #6c757d;
+    color: #fff;
+}
+.document-status.status-success {
+    background: #198754;
+    color: #fff;
+}
+.document-status.status-danger {
+    background: #dc3545;
+    color: #fff;
+}
+.document-status.status-warning {
+    background: #ffc107;
+    color: #212529;
+}
+.document-status.status-info {
+    background: #0dcaf0;
+    color: #212529;
+}
+.document-status.status-light {
+    border-color: #ced4da;
+    background: #f8f9fa;
+    color: #212529;
+}
+.document-status.status-dark {
+    background: #212529;
+    color: #fff;
 }
 @media (max-width: 760px) {
     .workflow-grid {
@@ -569,26 +603,8 @@ summary {
 }
 .document-state .document-status {
     border-radius: 20px;
-    background: #f0f2f7;
-    color: #556077;
     font-size: 0.85rem;
     padding: 6px 11px;
-}
-.document-state[data-status="ready"] .document-status,
-.document-state[data-status="released"] .document-status,
-.document-state[data-status="approved"] .document-status {
-    background: #eaf6ef;
-    color: #276244;
-}
-.document-state[data-status="needs_revision"] .document-status,
-.document-state[data-status="awaiting_confirmation"] .document-status,
-.document-state[data-status="awaiting_payment"] .document-status {
-    background: #fff3df;
-    color: #875b16;
-}
-.document-state[data-status="rejected"] .document-status {
-    background: #fceced;
-    color: #a03b46;
 }
 .documents-list-page .documents-footer {
     padding: 16px 24px;

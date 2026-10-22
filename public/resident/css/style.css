@@ -1289,18 +1289,6 @@ input[type="date"] {
   font-weight: 500;
   white-space: nowrap;
 }
-.status-processing {
-  background: #fff2bd;
-  color: #755600;
-}
-.status-completed {
-  background: #dcf5e5;
-  color: #17633c;
-}
-.status-denied {
-  background: #ffe2e4;
-  color: #a52836;
-}
 .documents-main .document-details-button {
   background: transparent;
   color: var(--blue);
