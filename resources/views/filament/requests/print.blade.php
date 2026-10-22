@@ -33,7 +33,17 @@
         @endif
         @if($document->official_receipt)<p>Official Receipt: {{ $document->official_receipt }}<br>Amount paid: ₱{{ $document->amount_paid }}</p>@endif
         <div class="signature">________________________________<br>Barangay Officer<br>Signature over printed name</div>
-        <footer>{{ $document->reference }} · {{ config('barangay.office_name', 'Barangay Office') }}</footer>
+        
+        <footer>
+            <style>
+            footer {
+                font-size: 12px;
+                text-align: center;
+            }
+            </style>
+            {{ $document->reference }} · {{ config('barangay.office_name', 'Barangay Office') }}
+        </footer>
+        
     </main>
     <script>document.getElementById('print-document').addEventListener('click', () => window.print());</script>
 </body>

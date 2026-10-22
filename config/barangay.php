@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'office_name' => env('BARANGAY_OFFICE_NAME', 'Barangay Office'),
+    'office_name' => env('BARANGAY_OFFICE_NAME', 'Barangay 663 Zone 71 District V Manila'),
 
     'admin_email' => env('SEED_ADMIN_EMAIL'),
     'admin_password' => env('SEED_ADMIN_PASSWORD'),
@@ -12,7 +12,7 @@ return [
         [
             'document_type_name' => 'Barangay Clearance',
             'category' => 'clearance',
-            'document_type_description' => null,
+            'document_type_description' => 'Barangay Clearance for employment, business, or other purposes.',
             'document_type_fee' => '50.00',
             'processing_days' => 5,
             'is_active' => true,

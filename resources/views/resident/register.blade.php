@@ -114,4 +114,11 @@
 @endsection
 @push('scripts')
     <script src="{{ asset('resident/js/register.js') }}" defer></script>
+
+    @if (session('registered'))
+        <script>
+            alert('Registration successful! Please log in with your account.');
+            window.location.href = @json(route('resident.login'));
+        </script>
+    @endif
 @endpush

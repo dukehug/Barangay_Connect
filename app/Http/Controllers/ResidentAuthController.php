@@ -11,6 +11,8 @@ use Illuminate\Validation\ValidationException;
 
 class ResidentAuthController extends Controller
 {
+
+    //login 
     public function login(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -26,16 +28,20 @@ class ResidentAuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->route('resident.dashboard');
+        return redirect()
+            ->route('resident.dashboard');
     }
 
+    //registration
     public function register(ResidentRegistrationRequest $request): RedirectResponse
     {
         $resident = Resident::create($request->validated());
         Auth::guard('resident')->login($resident);
         $request->session()->regenerate();
 
-        return redirect()->route('resident.dashboard');
+        return redirect()
+            ->route('resident.register')
+            ->with('registered', true);
     }
 
     public function logout(Request $request): RedirectResponse
