@@ -2,7 +2,15 @@
 @section('title', $complaint->reference)
 @section('main-class', 'documents-main')
 @section('content')
-    <section class="greeting page-head"><div><h1>{{ $complaint->reference }}</h1><p>{{ $complaint->complaint_type }}</p></div><a href="{{ route('resident.complaints') }}">Back to My Complaints</a></section>
+
+    <section class="greeting page-head">
+            <div>
+                <h1>{{ $complaint->reference }}</h1>
+                <p>{{ $complaint->complaint_type }}</p>
+            </div>
+            <a class="request-new" href="{{ route('resident.complaints') }}" >Back to My Complaints</a>
+    </section>
+
     <section class="workflow-card">
         <div class="document-state" data-status="{{ $complaint->status->value }}">@include('resident.status', ['status' => $complaint->status])</div>
         @if($complaint->review_note)
@@ -10,6 +18,18 @@
         @endif
         <h2>Complaint details</h2>
         <p class="portal-prose">{{ $complaint->content }}</p>
+        @if($complaint->googleMapsUrl())
+            <p>
+                <strong>Location:</strong> 
+                <br>
+
+                Latitude: {{ $complaint->latitude }}, Longitude: {{ $complaint->longitude }}<br>
+
+                <a href="{{ $complaint->googleMapsUrl() }}" target="_blank" rel="noopener noreferrer">
+                    Open in Google Maps
+                </a>
+            </p>
+        @endif
         <p>Submitted {{ $complaint->created_at->format('M d, Y H:i') }} · Updated {{ $complaint->updated_at->format('M d, Y H:i') }}</p>
     </section>
     <section class="workflow-card attachment-section">

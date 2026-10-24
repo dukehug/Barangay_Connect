@@ -19,6 +19,8 @@ class ResidentComplaintRequest extends FormRequest
         return [
             'complaint_type' => ['required', 'string', 'max:255', Rule::exists('complaint_types', 'name')->where('is_active', true)],
             'content' => ['required', 'string', 'max:10000'],
+            'latitude' => ['nullable', 'required_with:longitude', 'numeric', 'between:-90,90'],
+            'longitude' => ['nullable', 'required_with:latitude', 'numeric', 'between:-180,180'],
             'attachment' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:10240', 'prohibited_with:uploads.complaint_attachment'],
             'uploads' => ['nullable', 'array:complaint_attachment'],
             'uploads.complaint_attachment' => ['nullable', 'uuid', Rule::exists('resident_document_uploads', 'token')

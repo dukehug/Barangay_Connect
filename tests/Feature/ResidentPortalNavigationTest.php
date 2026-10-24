@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Enums\ComplaintStatus;
 use App\Enums\RequestStatus;
 use App\Models\Announcement;
+use App\Models\AuditLog;
+use App\Models\BarangayEmployee;
 use App\Models\Complaint;
 use App\Models\DocumentRequest;
 use App\Models\DocumentType;
@@ -34,11 +36,11 @@ class ResidentPortalNavigationTest extends TestCase
     {
         $resident = Resident::factory()->create();
         $complaint = Complaint::factory()->create(['resident_id' => $resident->id, 'complaint_type' => 'Sanitation', 'content' => 'Missed collection', 'status' => ComplaintStatus::InProgress]);
-        Complaint::factory()->create(['complaint_type' => 'Sanitation', 'content' => 'Private complaint', 'status' => ComplaintStatus::InProgress]);
+        $otherComplaint = Complaint::factory()->create(['complaint_type' => 'Sanitation', 'content' => 'Private complaint', 'status' => ComplaintStatus::InProgress]);
         $this->actingAs($resident, 'resident');
 
         foreach (['Sanitation', $complaint->reference, 'In progress', 'Missed'] as $search) {
-            $this->get(route('resident.complaints', ['search' => $search]))->assertOk()->assertSee('Missed collection')->assertDontSee('Private complaint');
+            $this->get(route('resident.complaints', ['search' => $search]))->assertOk()->assertSee($complaint->reference)->assertDontSee($otherComplaint->reference);
         }
         $this->get(route('resident.complaints', ['search' => 'unmatched']))->assertOk()->assertSee('No matching complaints');
     }
@@ -55,6 +57,45 @@ class ResidentPortalNavigationTest extends TestCase
         $this->assertCount(2, $response->viewData('complaints'));
         $this->get(route('resident.complaints', ['per_page' => 999]))->assertSessionHasErrors('per_page');
         $this->get(route('resident.documents', ['search' => ['invalid']]))->assertSessionHasErrors('search');
+    }
+
+    public function test_document_list_shows_separate_columns_and_the_full_purpose(): void
+    {
+        $purpose = 'Application for educational assistance and school enrollment for the upcoming academic year.';
+        $document = DocumentRequest::factory()->create(['purpose' => $purpose, 'created_at' => '2026-10-12 10:00:00', 'status' => RequestStatus::Ready]);
+
+        $this->actingAs($document->resident, 'resident')->get(route('resident.documents'))->assertOk()
+            ->assertSeeInOrder(['Request No.', 'Document Type', 'Date Applied', 'Purpose', 'Status', 'Actions'])
+            ->assertSeeInOrder([$document->reference, $document->documentType->document_type_name, 'October 12, 2026', $purpose, 'Ready for pickup'])
+            ->assertSee(route('resident.documents.show', $document))
+            ->assertSee('Showing 1–1 of 1 entries')->assertSee('Page 1 of 1');
+    }
+
+    public function test_complaint_list_reply_date_uses_the_latest_staff_update_only(): void
+    {
+        $complaint = Complaint::factory()->create(['created_at' => '2026-10-12 10:00:00', 'updated_at' => '2026-10-15 10:00:00', 'status' => ComplaintStatus::Pending]);
+        $this->actingAs($complaint->resident, 'resident');
+
+        $this->get(route('resident.complaints'))->assertOk()
+            ->assertSeeInOrder(['Complaints No', 'Category', 'Date Submit', 'Date Replyed', 'Status', 'Actions'])
+            ->assertSeeInOrder([$complaint->reference, $complaint->complaint_type, 'October 12, 2026', '—'])
+            ->assertDontSee('October 15, 2026');
+
+        $staff = BarangayEmployee::factory()->create();
+        foreach ([
+            ['complaints', $staff->id, '2026-10-13 10:00:00'],
+            ['complaints', $staff->id, '2026-10-14 10:00:00'],
+            ['residents', $staff->id, '2026-10-16 10:00:00'],
+        ] as [$table, $staffId, $date]) {
+            AuditLog::create(['table_affected' => $table, 'record_id' => $complaint->id, 'action' => 'updated', 'staff_id' => $staffId])
+                ->forceFill(['created_at' => $date])->save();
+        }
+
+        $response = $this->get(route('resident.complaints'))->assertOk()
+            ->assertSeeInOrder([$complaint->reference, $complaint->complaint_type, 'October 12, 2026', 'October 14, 2026'])
+            ->assertDontSee('October 13, 2026')->assertDontSee('October 16, 2026')
+            ->assertSee(route('resident.complaints.show', $complaint));
+        $this->assertTrue($response->viewData('complaints')->first()->relationLoaded('latestStaffUpdate'));
     }
 
     public function test_announcement_navigation_only_links_to_published_records_in_display_order(): void
@@ -78,11 +119,11 @@ class ResidentPortalNavigationTest extends TestCase
     {
         $resident = Resident::factory()->create();
         $content = '<script>alert("resident")</script>';
-        Complaint::factory()->create(['resident_id' => $resident->id, 'content' => $content]);
+        $complaint = Complaint::factory()->create(['resident_id' => $resident->id, 'content' => $content]);
         $this->actingAs($resident, 'resident');
 
-        foreach (['resident.complaints', 'resident.activity'] as $route) {
-            $this->get(route($route))->assertOk()->assertSee($content)->assertDontSee($content, false);
+        foreach ([route('resident.complaints.show', $complaint), route('resident.activity')] as $url) {
+            $this->get($url)->assertOk()->assertSee($content)->assertDontSee($content, false);
         }
     }
 }

@@ -7,6 +7,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
+use Filament\Forms\Components\DatePicker;
 
 class AnnouncementForm
 {
@@ -31,6 +32,7 @@ class AnnouncementForm
                 Toggle::make('published')
                     ->default(false),
 
+
                 RichEditor::make('content')
                     ->toolbarButtons([
                         ['bold', 'italic', 'underline', 'strike', 'link'],
@@ -49,7 +51,12 @@ class AnnouncementForm
                     ->preventFileAttachmentPathTampering()
                     ->required()
                     ->columnSpanFull(),
-
+                
+                DatePicker::make('date_tested')
+                    ->label('Date Posted')
+                    ->native(false)
+                    ->weekStartsOnMonday()
+                    ->displayFormat('d/m/Y'),
             ]);
     }
 }

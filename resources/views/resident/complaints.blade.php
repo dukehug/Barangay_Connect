@@ -6,47 +6,51 @@
     <section class="greeting page-head">
         <div>
             <h1>My Complaints</h1>
-            <p>Your complaints, all in one place.</p>
+            <p>Track your complaints and barangay replies.</p>
         </div>
-        <button class="request-new" type="button" data-open-dialog="complaintDialog"><span aria-hidden="true">+</span> New complaint</button>
+        <button class="request-new" type="button" data-open-dialog="complaintDialog">File a Complaint</button>
     </section>
-    <ol class="documents-guide" aria-label="How complaints work">
-        <li><span>1</span> Submit complaint</li><li><span>2</span> Track updates</li><li><span>3</span> View resolution</li>
-    </ol>
     <section class="documents-panel" aria-label="My Complaints">
         <form class="documents-toolbar" method="GET" action="{{ route('resident.complaints') }}">
             <div class="document-search">
-                <label class="document-sr-only" for="recordSearch">Search my complaints</label>
-                <input type="search" id="recordSearch" name="search" value="{{ request('search') }}" placeholder="Search complaints…" maxlength="255">
+                <label for="recordSearch">Search complaints</label>
+                <input type="search" id="recordSearch" name="search" value="{{ request('search') }}" placeholder="Search number, category, content or status" maxlength="255">
             </div>
             <button class="btn" type="submit">Search</button>
             @if(request()->filled('search'))<a class="documents-clear" href="{{ route('resident.complaints') }}">Clear</a>@endif
             <div class="document-page-size">
-                <label for="pageSize">Per page</label>
+                <label for="pageSize">Show</label>
                 <select id="pageSize" name="per_page">
                     @foreach ([2, 5, 10, 25] as $size)
                         <option value="{{ $size }}" @selected((int) request('per_page', 10) === $size)>{{ $size }}</option>
                     @endforeach
                 </select>
+                <span>entries</span>
             </div>
         </form>
         <div class="document-table-scroll">
             <table class="document-table documents-request-table">
-                <thead><tr><th scope="col">Complaint</th><th scope="col">Submitted</th><th scope="col">Status</th><th scope="col"><span class="document-sr-only">Action</span></th></tr></thead>
+                <thead><tr><th scope="col">Complaints No</th><th scope="col">Category</th><th scope="col">Date Submit</th><th scope="col">Date Replyed</th><th scope="col">Status</th><th scope="col">Actions</th></tr></thead>
                 <tbody>
                     @forelse ($complaints as $complaint)
                         <tr>
-                            <td>
-                                <a class="document-name" href="{{ route('resident.complaints.show', $complaint) }}">{{ $complaint->complaint_type }}</a>
-                                <span class="document-reference">{{ $complaint->reference }}</span>
-                                <span class="document-purpose">{{ Str::limit($complaint->content, 65) }}</span>
+                            <td data-label="Complaints No" class="document-number">{{ $complaint->reference }}</td>
+                            <td data-label="Category" class="document-type">{{ $complaint->complaint_type }}</td>
+                            <td data-label="Date Submit" class="document-date">{{ $complaint->created_at->format('F j, Y') }}</td>
+                            <td data-label="Date Replyed" class="document-date">{{ $complaint->latestStaffUpdate?->created_at?->format('F j, Y') ?? '—' }}</td>
+                            <td data-label="Status"><div class="document-state" data-status="{{ $complaint->status->value }}">@include('resident.status', ['status' => $complaint->status])</div></td>
+                            <td data-label="Actions" class="document-action">
+                                <a class="btn-sm" href="{{ route('resident.complaints.show', $complaint) }}" aria-label="View {{ $complaint->reference }}">
+                                <svg class="btn-icon"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                    <span>View</span>
+                                </a>
                             </td>
-                            <td class="document-date">{{ $complaint->created_at->format('M d, Y') }}</td>
-                            <td><div class="document-state" data-status="{{ $complaint->status->value }}">@include('resident.status', ['status' => $complaint->status])</div></td>
-                            <td class="document-action"><a class="document-details-button" href="{{ route('resident.complaints.show', $complaint) }}" aria-label="View {{ $complaint->reference }}">View details <span aria-hidden="true">→</span></a></td>
                         </tr>
                     @empty
-                        <tr><td colspan="4" class="documents-empty">
+                        <tr><td colspan="6" class="documents-empty">
                             <span class="documents-empty-icon" aria-hidden="true">▤</span>
                             <strong>{{ request()->filled('search') ? 'No matching complaints' : 'Your complaints will appear here' }}</strong>
                             <p>{{ request()->filled('search') ? 'Try another category or reference number.' : 'Report an issue to the barangay office.' }}</p>
@@ -56,8 +60,10 @@
                 </tbody>
             </table>
         </div>
-        <div class="documents-footer"><p role="status">{{ $complaints->total() }} {{ Str::plural('complaint', $complaints->total()) }}</p>@include('resident.pagination', ['paginator' => $complaints])</div>
+        <div class="documents-footer"><p role="status">Showing {{ $complaints->firstItem() ?? 0 }}–{{ $complaints->lastItem() ?? 0 }} of {{ $complaints->total() }} entries</p>@include('resident.pagination', ['paginator' => $complaints, 'alwaysShow' => true])</div>
     </section>
+
+    {{-- modal dialog for filing a complaint --}}
     <dialog id="complaintDialog" class="request-dialog complaint-dialog" aria-labelledby="formTitle"
         @if ($errors->any()) data-reopen @endif>
         <header class="request-dialog-header">
@@ -88,6 +94,32 @@
             <label for="content">Complaint details</label>
             <textarea id="content" name="content" rows="9" required maxlength="10000"
                 placeholder="Describe what happened, where and when, and how it affected you.">{{ old('content') }}</textarea>
+            <fieldset class="complaint-location" data-complaint-location>
+                <legend>Location (optional)</legend>
+                <p id="complaintLocationHelp">Mark where the issue happened, use your current location, or enter coordinates. Click the map or drag the pin to adjust. With the map focused, use arrow keys to move and Enter to select its center.</p>
+                <div class="complaint-location-actions">
+                    <button type="button" data-location-toggle aria-controls="complaintLocationMap" aria-expanded="false">Choose on map</button>
+                    <button type="button" data-location-locate>Use my current location</button>
+                    <button type="button" data-location-clear>Clear location</button>
+                </div>
+                <div id="complaintLocationMap" class="complaint-location-map" data-location-map hidden
+                    role="region" aria-label="Complaint location map" aria-describedby="complaintLocationHelp"></div>
+                <div class="complaint-location-coordinates">
+                    <div>
+                        <label for="complaintLatitude">Latitude</label>
+                        <input id="complaintLatitude" name="latitude" type="number" min="-90" max="90" step="any"
+                            value="{{ is_scalar(old('latitude')) ? old('latitude') : '' }}" placeholder="e.g. 14.4297" data-location-latitude>
+                        @error('latitude')<p class="complaint-location-error">{{ $message }}</p>@enderror
+                    </div>
+                    <div>
+                        <label for="complaintLongitude">Longitude</label>
+                        <input id="complaintLongitude" name="longitude" type="number" min="-180" max="180" step="any"
+                            value="{{ is_scalar(old('longitude')) ? old('longitude') : '' }}" placeholder="e.g. 120.9367" data-location-longitude>
+                        @error('longitude')<p class="complaint-location-error">{{ $message }}</p>@enderror
+                    </div>
+                </div>
+                <p class="complaint-location-status" data-location-status role="status" aria-live="polite">No location selected.</p>
+            </fieldset>
             <p class="upload-kind-label">Attachments (optional)</p>
             <p>PDF, JPG or PNG · Up to 10 MB each. Select multiple files.</p>
             <livewire:resident-document-uploader kind="complaint_attachment" :token="old('uploads.complaint_attachment')" />
@@ -99,6 +131,26 @@
         </form>
     </dialog>
 @endsection
+
 @push('scripts')
+    @vite('resources/js/complaint-location.js')
     <script src="{{ asset('resident/js/complaints.js') }}" defer></script>
+
+    @if (session('complaint_submitted'))
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Submission Successful',
+                text: 'Your complaint has been submitted successfully.',
+                confirmButtonText: 'Back to Complaints',
+                confirmButtonColor: '#3b82f6',
+                allowOutsideClick: false,
+                timer: 3000,
+                timerProgressBar: true
+            }).then(() => {
+                window.location.href = @json(route('resident.complaints'));
+            });
+        </script>
+    @endif
 @endpush

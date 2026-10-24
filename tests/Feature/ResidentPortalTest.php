@@ -111,8 +111,8 @@ class ResidentPortalTest extends TestCase
         Storage::disk('local')->assertExists($record->attachment_url);
         $this->get('/complaints/'.$record->id.'/attachment')->assertOk();
         $record->update(['status' => 'resolved']);
-        $this->get('/complaints')->assertSee('Resolved')->assertSee('Waste collection missed');
-        $this->actingAs($other, 'resident')->get('/complaints')->assertDontSee('Waste collection missed');
+        $this->get('/complaints')->assertSee('Resolved')->assertSee($record->reference);
+        $this->actingAs($other, 'resident')->get('/complaints')->assertDontSee($record->reference);
         $this->get('/complaints/'.$record->id.'/attachment')->assertNotFound();
     }
 

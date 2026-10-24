@@ -510,22 +510,27 @@ summary {
     background: #fff;
 }
 .documents-list-page .documents-panel {
-    padding: 0;
-    border-radius: 16px;
+    padding: 22px;
+    border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 24px #24324b04;
 }
 .documents-list-page .documents-toolbar {
-    padding: 20px 24px;
-    margin: 0;
+    padding: 0;
+    margin: 0 0 22px;
     gap: 12px;
-    align-items: center;
+    align-items: flex-end;
 }
 .documents-list-page .document-search {
-    width: min(100%, 320px);
+    width: min(100%, 380px);
+}
+.documents-list-page .document-search label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
 }
 .documents-list-page .document-search input {
-    background: #f8f9fc;
+    background: #fff;
     border-color: #e2e5ed;
     border-radius: 9px;
 }
@@ -534,7 +539,7 @@ summary {
     color: var(--document-muted);
 }
 .documents-list-page .documents-toolbar .btn {
-    align-self: center;
+    align-self: flex-end;
     min-height: 42px;
     border-radius: 9px;
 }
@@ -543,24 +548,37 @@ summary {
     color: var(--blue);
 }
 .documents-request-table th {
-    background: #f8f9fc;
-    color: var(--document-muted);
-    padding: 13px 24px;
-    font-size: 0.95rem;
-    font-weight: 500;
+    background: #eef0f6;
+    color: #454557;
+    padding: 15px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
 }
 .documents-request-table td {
-    padding: 22px 24px;
+    padding: 18px 14px;
+    font-size: 0.8rem;
 }
 .documents-request-table td:first-child {
-    white-space: normal;
-    max-width: 380px;
+    white-space: nowrap;
+    font-size: 0.75rem;
 }
 .documents-request-table tbody tr:nth-child(even) {
-    background: #fff;
+    background: #fafafe;
 }
 .documents-request-table tbody tr:hover {
-    background: #fafbff;
+    background: #f4f5ff;
+}
+.documents-request-table .document-type,
+.documents-request-table .document-purpose-cell {
+    min-width: 150px;
+    max-width: 320px;
+    overflow-wrap: anywhere;
+}
+.documents-request-table .document-date {
+    color: inherit;
+}
+.documents-request-table .document-action {
+    text-align: left;
 }
 .document-name {
     display: block;
@@ -607,10 +625,15 @@ summary {
     padding: 6px 11px;
 }
 .documents-list-page .documents-footer {
-    padding: 16px 24px;
+    padding: 22px 0 0;
 }
 .documents-list-page .portal-pagination {
     margin: 0;
+}
+.documents-list-page .portal-pagination [aria-disabled="true"] {
+    background: #f4f5ff;
+    color: #676b87;
+    cursor: default;
 }
 .documents-request-table .documents-empty {
     padding: 52px 24px;
@@ -750,8 +773,11 @@ summary {
         gap: 6px;
     }
     .documents-list-page .documents-toolbar {
-        padding: 16px;
+        padding: 0;
         flex-wrap: wrap;
+    }
+    .documents-list-page .documents-panel {
+        padding: 16px;
     }
     .documents-list-page .document-search {
         width: auto;
@@ -777,9 +803,9 @@ summary {
     }
     .documents-request-table tr {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        padding: 20px 16px;
-        gap: 12px;
+        grid-template-columns: minmax(0, 1fr);
+        padding: 20px 12px;
+        gap: 14px;
         border-top: 1px solid #eceef4;
     }
     .documents-request-table td {
@@ -789,14 +815,23 @@ summary {
     }
     .documents-request-table td:first-child {
         max-width: none;
-        grid-column: 1 / -1;
+        white-space: normal;
     }
-    .documents-request-table .document-date {
-        grid-column: 1 / -1;
-        font-size: 0.7rem;
+    .documents-request-table td[data-label] {
+        display: grid;
+        grid-template-columns: 105px minmax(0, 1fr);
+        align-items: start;
+        gap: 12px;
+        min-width: 0;
+        max-width: none;
+        font-size: 0.8rem;
+        white-space: normal;
+        overflow-wrap: anywhere;
     }
-    .documents-request-table .document-date::before {
-        content: "Submitted ";
+    .documents-request-table td[data-label]::before {
+        content: attr(data-label);
+        color: #596278;
+        font-weight: 500;
     }
     .documents-request-table .document-action {
         align-self: center;
@@ -805,7 +840,10 @@ summary {
         font-size: 0.73rem;
     }
     .documents-request-table .document-state {
-        padding-top: 8px;
+        padding-top: 0;
+    }
+    .documents-request-table .document-status {
+        white-space: normal;
     }
     .documents-main .workflow-card {
         padding: 20px;
@@ -815,7 +853,7 @@ summary {
         gap: 0;
     }
     .documents-list-page .documents-footer {
-        padding: 16px;
+        padding: 16px 0 0;
     }
 }
 .documents-main .workflow-card > .document-state {
@@ -1029,6 +1067,75 @@ summary {
     font-size: 0.72rem;
     margin-top: 8px;
 }
+.complaint-location {
+    min-width: 0;
+    margin: 20px 0;
+    padding: 16px;
+    border: 1px solid #dce0ea;
+    border-radius: 10px;
+}
+.complaint-location legend {
+    padding: 0 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+.complaint-location > p {
+    color: #526579;
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+.complaint-location-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0;
+}
+.complaint-form .complaint-location-actions button {
+    width: auto;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #24344a;
+    font-size: 0.8rem;
+}
+.complaint-location-map {
+    width: 100%;
+    height: clamp(240px, 40vh, 340px);
+    margin-bottom: 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    isolation: isolate;
+}
+.complaint-location-map[hidden] {
+    display: none;
+}
+.complaint-location-coordinates {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+.complaint-location-coordinates input {
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 8px;
+}
+.complaint-location-error {
+    color: #b42318;
+    font-size: 0.8rem;
+}
+@media (max-width: 480px) {
+    .complaint-location {
+        padding: 12px;
+    }
+    .complaint-location-coordinates {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .complaint-form .complaint-location-actions button {
+        flex: 1 1 auto;
+    }
+}
 .complaint-form select {
     width: 100%;
     padding: 12px;
@@ -1108,6 +1215,22 @@ summary {
     margin-bottom: 24px;
     color: #64748b;
     font-size: 0.875rem;
+}
+.register-card .resident-section-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.register-card .resident-section-icon {
+    display: block;
+    width: clamp(1.25rem, 3vw, 1.5rem);
+    height: clamp(1.25rem, 3vw, 1.5rem);
+    flex-shrink: 0;
+    color: #17243a;
+}
+.register-card .resident-section-heading h2 {
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 .profile-edit-dialog {
     width: min(1080px, calc(100% - 32px));

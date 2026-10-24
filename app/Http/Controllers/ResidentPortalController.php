@@ -79,7 +79,7 @@ class ResidentPortalController extends Controller
     public function complaints(Request $request): View
     {
         $filters = $this->recordFilters($request);
-        $complaints = $request->user('resident')->complaints()->with('media');
+        $complaints = $request->user('resident')->complaints()->with(['media', 'latestStaffUpdate']);
         if ($filters['search'] !== '') {
             $search = $filters['search'];
             $complaints->where(function (Builder $query) use ($search): void {
@@ -130,7 +130,9 @@ class ResidentPortalController extends Controller
             throw $exception;
         }
 
-        return redirect()->route('resident.complaints')->with('status', 'Your complaint has been sent to the barangay office.');
+        return redirect()
+            ->route('resident.complaints')
+            ->with('complaint_submitted', true);
     }
 
     public function attachment(Request $request, int $complaint): StreamedResponse

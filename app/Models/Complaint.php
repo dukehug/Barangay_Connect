@@ -39,6 +39,8 @@ class Complaint extends Model implements HasMedia
     {
         return [
             'status' => ComplaintStatus::class,
+            'latitude' => 'decimal:7',
+            'longitude' => 'decimal:7',
         ];
     }
 
@@ -51,7 +53,21 @@ class Complaint extends Model implements HasMedia
         'attachment_url',
         'status',
         'review_note',
+        'latitude',
+        'longitude',
     ];
+
+    public function googleMapsUrl(): ?string
+    {
+        if ($this->latitude === null || $this->longitude === null) {
+            return null;
+        }
+
+        return 'https://www.google.com/maps/search/?'.http_build_query([
+            'api' => 1,
+            'query' => $this->latitude.','.$this->longitude,
+        ], '', '&', PHP_QUERY_RFC3986);
+    }
 
     public function latestStaffUpdate(): HasOne
     {

@@ -2,9 +2,20 @@
 @section('title', $document->reference)
 @section('main-class', 'documents-main')
 @section('content')
-    <section class="greeting page-head"><div><h1>{{ $document->reference }}</h1><p>{{ $document->documentType->document_type_name }}</p></div><a href="{{ route('resident.documents') }}">Back to My Documents</a></section>
+
+    <section class="greeting page-head">
+        <div>
+            <h1>{{ $document->reference }}</h1>
+            <p>{{ $document->documentType->document_type_name }}</p>
+        </div>
+        <a class="request-new" href="{{ route('resident.documents') }}">Back to My Documents</a>
+    </section>
+
+
     <section class="workflow-card">
+
         <div class="document-state" data-status="{{ $document->status->value }}">@include('resident.status', ['status' => $document->status])</div>
+        
         <h2>Application details</h2>
         <p class="portal-prose">{{ $document->purpose }}</p>
         @if($document->application_kind)<p>Application: {{ ucfirst($document->application_kind) }}</p>@endif
@@ -18,6 +29,7 @@
             <div class="workflow-notice"><strong>Please review the arrangement below.</strong><p>Accept by {{ $document->confirmation_expires_at->setTimezone('Asia/Manila')->format('M d, Y H:i') }} Philippine time. Saturday and Sunday do not count toward your confirmation period. Resources are held until this deadline.</p></div>
         @endif
         @if($document->status === \App\Enums\RequestStatus::Expired)<p class="workflow-notice">The confirmation deadline passed and the reserved resources were released. Revise and resubmit this application if you still need them.</p>@endif
+        
     </section>
     @if($document->reservations->isNotEmpty())
         <section class="workflow-card"><h2>Requested and offered arrangement</h2><p>Times shown in Philippine time. Document release and equipment return are tracked separately.</p>

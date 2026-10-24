@@ -91,5 +91,20 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('resident/js/sidebar.js') }}" defer></script>
+    <script src="{{ asset('resident/js/register.js') }}" defer></script>
+
+    @if (session('registered'))
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Registration successful',
+                text: 'Please use your account to log in.',
+                confirmButtonText: 'Go to Login',
+                allowOutsideClick: false
+            }).then(() => {
+                window.location.href = @json(route('resident.login'));
+            });
+        </script>
+    @endif
 @endpush

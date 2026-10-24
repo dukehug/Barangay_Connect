@@ -88,7 +88,7 @@ input {
 
 input::placeholder {
     color: #d2d0d0;
-    font-size: 0.25rem;
+    font-size: 0.75rem;
 }
 
 input:focus,
@@ -2218,4 +2218,32 @@ body.request-modal-open {
 }
 .photo-message:not(:empty) {
     margin-bottom: 12px;
+}
+
+
+.btn-sm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    color: #2563eb;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    transition: background 0.15s;
+}
+
+.btn-sm:hover {
+    background: #dbeafe;
+}
+
+.btn-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
 }
