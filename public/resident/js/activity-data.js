@@ -34,7 +34,12 @@
         form.addEventListener('submit', event => {
             if (processing > 0 || form.querySelector('[data-upload-busy]')) {
                 event.preventDefault();
-                window.alert('Please wait until your attachments are ready to submit.');
+                const message = 'Please wait until your attachments are ready to submit.';
+                if (window.ResidentAlerts) {
+                    window.ResidentAlerts.fire({icon: 'info', title: 'Attachments are uploading', text: message});
+                } else {
+                    window.alert(message);
+                }
             }
         });
     });

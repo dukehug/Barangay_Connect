@@ -1,10 +1,34 @@
 (() => {
     document.getElementById('pageSize')?.addEventListener('change', event => event.target.form.requestSubmit());
-    document.querySelectorAll('[data-confirm-cancel]').forEach(form => {
-        form.addEventListener('submit', event => {
-            if (!window.confirm('Cancel this request? Any reserved resources will be released.')) event.preventDefault();
+    const confirmSubmission = (selector, title, text, confirmButtonText) => {
+        document.querySelectorAll(selector).forEach(form => {
+            let approved = false;
+            let pending = false;
+            form.addEventListener('submit', async event => {
+                if (approved || event.defaultPrevented) return;
+                event.preventDefault();
+                if (pending) return;
+                pending = true;
+                try {
+                    const result = await window.ResidentAlerts.fire({
+                        icon: 'warning', title, text, showCancelButton: true,
+                        confirmButtonText, cancelButtonText: 'Keep it', focusCancel: true,
+                    });
+                    if (result.isConfirmed) {
+                        approved = true;
+                        form.requestSubmit(event.submitter || undefined);
+                    }
+                } finally {
+                    approved = false;
+                    pending = false;
+                }
+            });
         });
-    });
+    };
+    confirmSubmission('[data-confirm-cancel]', 'Cancel this request?',
+        'Any reserved resources will be released.', 'Yes, cancel request');
+    confirmSubmission('[data-delete-attachment]', 'Delete this file?',
+        'You may need to upload a replacement before resubmitting.', 'Yes, delete file');
     const previewDialog = document.querySelector('[data-attachment-dialog]');
     let previewTrigger;
     document.querySelectorAll('[data-file-preview]').forEach(link => {
@@ -25,11 +49,6 @@
     previewDialog?.addEventListener('close', () => {
         previewDialog.querySelector('[data-preview-content]').replaceChildren();
         previewTrigger?.focus();
-    });
-    document.querySelectorAll('[data-delete-attachment]').forEach(form => {
-        form.addEventListener('submit', event => {
-            if (!window.confirm('Delete this file? You may need to upload a replacement before resubmitting.')) event.preventDefault();
-        });
     });
     const form = document.querySelector('[data-document-form]');
     if (!form) return;

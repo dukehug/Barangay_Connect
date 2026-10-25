@@ -16,7 +16,11 @@
         <link rel="stylesheet" href="{{ asset('resident/css/style.css') }}" />
         <link rel="stylesheet" href="{{ asset('resident/css/portal.css') }}" />
         <script src="{{ asset('resident/js/modal-icons.js') }}" defer></script>
-        <script src="{{ asset('resident/js/activity-data.js') }}" defer></script>
+        @if (request()->routeIs('resident.documents*', 'resident.complaints*'))
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+            <script src="{{ asset('resident/js/resident-alerts.js') }}" defer></script>
+        @endif
+        <script src="{{ asset('resident/js/activity-data.js') }}?v={{ filemtime(public_path('resident/js/activity-data.js')) }}" defer></script>
         @stack('styles')
         <meta name="csrf-token" content="{{ csrf_token() }}" />
     </head>

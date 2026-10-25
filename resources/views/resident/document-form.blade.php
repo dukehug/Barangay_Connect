@@ -83,4 +83,4 @@
         <div class="workflow-actions"><button class="request-new" type="submit">{{ $document->exists ? 'Resubmit application' : 'Submit application' }}</button><p>Track review updates in My Documents.</p></div>
     </form>
 @endsection
-@push('scripts')<script src="{{ asset('resident/js/documents.js') }}" defer></script>@endpush
+@push('scripts')<script src="{{ asset('resident/js/documents.js') }}?v={{ filemtime(public_path('resident/js/documents.js')) }}" defer></script>@endpush

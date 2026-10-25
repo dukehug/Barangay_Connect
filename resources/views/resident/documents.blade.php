@@ -68,29 +68,6 @@
 
 @push('scripts')
 
-    <script src="{{ asset('resident/js/documents.js') }}" defer></script>
+    <script src="{{ asset('resident/js/documents.js') }}?v={{ filemtime(public_path('resident/js/documents.js')) }}" defer></script>
 
-    {{-- Check session condition --}}
-    @if (session('document_submitted') || session('document_responded'))
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-            Swal.fire({
-                icon: 'success',
-                @if (session('document_submitted'))
-                    title: 'Submission Successful',
-                    text: 'Your document has been submitted successfully.',
-                @else
-                    title: 'Response Sent',
-                    text: 'Your response has been sent successfully.',
-                @endif
-                confirmButtonText: 'Back to documents',
-                confirmButtonColor: '#3b82f6',
-                allowOutsideClick: false,
-                timer: 3000,
-                timerProgressBar: true
-            }).then(() => {
-                window.location.href = @json(route('resident.documents'));
-            });
-        </script>
-    @endif
 @endpush

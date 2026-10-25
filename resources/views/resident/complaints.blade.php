@@ -76,9 +76,6 @@
                 </span>
             </button>
         </header>
-        @if ($errors->any())
-            @include('resident.messages')
-        @endif
         <form id="complaintForm" data-resident-uploads class="complaint-form" method="POST" enctype="multipart/form-data"
             action="{{ route('resident.complaints.store') }}">
             @csrf
@@ -142,21 +139,4 @@
     @vite('resources/js/complaint-location.js')
     <script src="{{ asset('resident/js/complaints.js') }}" defer></script>
 
-    @if (session('complaint_submitted'))
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Submission Successful',
-                text: 'Your complaint has been submitted successfully.',
-                confirmButtonText: 'Back to Complaints',
-                confirmButtonColor: '#3b82f6',
-                allowOutsideClick: false,
-                timer: 3000,
-                timerProgressBar: true
-            }).then(() => {
-                window.location.href = @json(route('resident.complaints'));
-            });
-        </script>
-    @endif
 @endpush

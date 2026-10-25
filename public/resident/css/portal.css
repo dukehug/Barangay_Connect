@@ -1663,3 +1663,25 @@ summary {
         height: 64px;
     }
 }
+
+/* SweetAlert2 stays centered above native complaint and attachment dialogs. */
+.resident-alert-container.swal2-container {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+}
+.resident-alert-popup.swal2-popup {
+    max-width: calc(100vw - 32px);
+    font-family: inherit;
+}
+.resident-alert-popup .swal2-html-container {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+.resident-alert-popup .swal2-actions button.swal2-styled {
+    width: auto;
+    height: auto;
+    min-height: 44px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+}
