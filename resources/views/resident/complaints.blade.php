@@ -5,7 +5,7 @@
 @section('content')
     <section class="greeting page-head">
         <div>
-            <h1>My Complaints</h1>
+            <h2>My Complaints</h2>
             <p>Track your complaints and barangay replies.</p>
         </div>
         <button class="request-new" type="button" data-open-dialog="complaintDialog">File a Complaint</button>
@@ -83,46 +83,52 @@
             action="{{ route('resident.complaints.store') }}">
             @csrf
             <p class="documents-note">Your complaint will be sent to the barangay office.</p>
-            <label for="complaint_type">Category</label>
-            <select id="complaint_type" name="complaint_type" required>
-                <option value="">Choose a category</option>
-                @foreach ($complaintTypes as $type)
-                    <option value="{{ $type->name }}" @selected(old('complaint_type') === $type->name)>{{ $type->name }}</option>
-                @endforeach
-            </select>
-            @if($complaintTypes->isEmpty())<p>No categories available. Please contact the barangay office.</p>@endif
-            <label for="content">Complaint details</label>
-            <textarea id="content" name="content" rows="9" required maxlength="10000"
-                placeholder="Describe what happened, where and when, and how it affected you.">{{ old('content') }}</textarea>
-            <fieldset class="complaint-location" data-complaint-location>
-                <legend>Location (optional)</legend>
-                <p id="complaintLocationHelp">Mark where the issue happened, use your current location, or enter coordinates. Click the map or drag the pin to adjust. With the map focused, use arrow keys to move and Enter to select its center.</p>
-                <div class="complaint-location-actions">
-                    <button type="button" data-location-toggle aria-controls="complaintLocationMap" aria-expanded="false">Choose on map</button>
-                    <button type="button" data-location-locate>Use my current location</button>
-                    <button type="button" data-location-clear>Clear location</button>
+            <div class="complaint-form-grid">
+                <div class="complaint-form-details">
+                    <label for="complaint_type">Category</label>
+                    <select id="complaint_type" name="complaint_type" required>
+                        <option value="">Choose a category</option>
+                        @foreach ($complaintTypes as $type)
+                            <option value="{{ $type->name }}" @selected(old('complaint_type') === $type->name)>{{ $type->name }}</option>
+                        @endforeach
+                    </select>
+                    @if($complaintTypes->isEmpty())<p>No categories available. Please contact the barangay office.</p>@endif
+                    <label for="content">Complaint details</label>
+                    <textarea id="content" name="content" rows="9" required maxlength="10000"
+                        placeholder="Describe what happened, where and when, and how it affected you.">{{ old('content') }}</textarea>
+                    <p class="upload-kind-label">Attachments (optional)</p>
+                    <p>PDF, JPG or PNG · Up to 10 MB each. Select multiple files.</p>
+                    <livewire:resident-document-uploader kind="complaint_attachment" :token="old('uploads.complaint_attachment')" />
                 </div>
-                <div id="complaintLocationMap" class="complaint-location-map" data-location-map hidden
-                    role="region" aria-label="Complaint location map" aria-describedby="complaintLocationHelp"></div>
-                <div class="complaint-location-coordinates">
-                    <div>
-                        <label for="complaintLatitude">Latitude</label>
-                        <input id="complaintLatitude" name="latitude" type="number" min="-90" max="90" step="any"
-                            value="{{ is_scalar(old('latitude')) ? old('latitude') : '' }}" placeholder="e.g. 14.4297" data-location-latitude>
-                        @error('latitude')<p class="complaint-location-error">{{ $message }}</p>@enderror
-                    </div>
-                    <div>
-                        <label for="complaintLongitude">Longitude</label>
-                        <input id="complaintLongitude" name="longitude" type="number" min="-180" max="180" step="any"
-                            value="{{ is_scalar(old('longitude')) ? old('longitude') : '' }}" placeholder="e.g. 120.9367" data-location-longitude>
-                        @error('longitude')<p class="complaint-location-error">{{ $message }}</p>@enderror
-                    </div>
+                <div class="complaint-form-location">
+                    <fieldset class="complaint-location" data-complaint-location>
+                        <legend>Location (optional)</legend>
+                        <p id="complaintLocationHelp">Mark where the issue happened, use your current location, or enter coordinates. Click the map or drag the pin to adjust. With the map focused, use arrow keys to move and Enter to select its center.</p>
+                        <div class="complaint-location-actions">
+                            <button type="button" data-location-toggle aria-controls="complaintLocationMap" aria-expanded="false">Choose on map</button>
+                            <button type="button" data-location-locate>Use my current location</button>
+                            <button type="button" data-location-clear>Clear location</button>
+                        </div>
+                        <div id="complaintLocationMap" class="complaint-location-map" data-location-map hidden
+                            role="region" aria-label="Complaint location map" aria-describedby="complaintLocationHelp"></div>
+                        <div class="complaint-location-coordinates">
+                            <div>
+                                <label for="complaintLatitude">Latitude</label>
+                                <input id="complaintLatitude" name="latitude" type="number" min="-90" max="90" step="any"
+                                    value="{{ is_scalar(old('latitude')) ? old('latitude') : '' }}" placeholder="e.g. 14.4297" data-location-latitude>
+                                @error('latitude')<p class="complaint-location-error">{{ $message }}</p>@enderror
+                            </div>
+                            <div>
+                                <label for="complaintLongitude">Longitude</label>
+                                <input id="complaintLongitude" name="longitude" type="number" min="-180" max="180" step="any"
+                                    value="{{ is_scalar(old('longitude')) ? old('longitude') : '' }}" placeholder="e.g. 120.9367" data-location-longitude>
+                                @error('longitude')<p class="complaint-location-error">{{ $message }}</p>@enderror
+                            </div>
+                        </div>
+                        <p class="complaint-location-status" data-location-status role="status" aria-live="polite">No location selected.</p>
+                    </fieldset>
                 </div>
-                <p class="complaint-location-status" data-location-status role="status" aria-live="polite">No location selected.</p>
-            </fieldset>
-            <p class="upload-kind-label">Attachments (optional)</p>
-            <p>PDF, JPG or PNG · Up to 10 MB each. Select multiple files.</p>
-            <livewire:resident-document-uploader kind="complaint_attachment" :token="old('uploads.complaint_attachment')" />
+            </div>
             <div class="complaint-form-actions">
                 <button type="submit">
                     <span data-modal-icon="send" aria-hidden="true">

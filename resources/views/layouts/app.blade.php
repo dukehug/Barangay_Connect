@@ -8,7 +8,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
-        @hasSection('uses-resident-upload')
+        @if ($__env->hasSection('uses-resident-upload') || $__env->hasSection('uses-resident-forms'))
             @livewireStyles
             @filamentStyles
             @vite('resources/css/resident-upload.css')
@@ -23,7 +23,7 @@
 
     <body class="@yield('body-class')">
         @yield('body')
-        @hasSection('uses-resident-upload')
+        @if ($__env->hasSection('uses-resident-upload') || $__env->hasSection('uses-resident-forms'))
             @filamentScripts
             @livewireScripts
         @endif

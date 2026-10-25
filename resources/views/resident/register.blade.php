@@ -2,6 +2,7 @@
 @section('title', 'Register')
 @section('intro', 'Create your barangay resident account!')
 @section('card-class', 'register-card')
+@section('uses-resident-forms', true)
 @section('content')
     <form class="resident-details-form" method="POST" action="{{ route('resident.register.store') }}">
         @csrf

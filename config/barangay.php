@@ -8,6 +8,35 @@ return [
     'admin_first_name' => env('SEED_ADMIN_FIRST_NAME', 'System'),
     'admin_last_name' => env('SEED_ADMIN_LAST_NAME', 'Administrator'),
 
+    'hotlines' => [
+        'barangay' => [
+            ['label' => '0912 345 6789', 'number' => '09123456789'],
+            ['label' => '0967 331 6819', 'number' => '09673316819'],
+        ],
+        'national' => [
+            [
+                'name' => 'NDRRMC',
+                'numbers' => [
+                    ['label' => '(02) 8911-5061 to 65', 'number' => '0289115061'],
+                ],
+            ],
+            [
+                'name' => 'PNP',
+                'numbers' => [
+                    ['label' => '117', 'number' => '117'],
+                    ['label' => '(02) 8722-0650', 'number' => '0287220650'],
+                ],
+            ],
+            [
+                'name' => 'Philippine Red Cross',
+                'numbers' => [
+                    ['label' => '143', 'number' => '143'],
+                    ['label' => '(02) 8527-8385 to 95', 'number' => '0285278385'],
+                ],
+            ],
+        ],
+    ],
+
     'document_types' => [
         [
             'document_type_name' => 'Barangay Clearance',

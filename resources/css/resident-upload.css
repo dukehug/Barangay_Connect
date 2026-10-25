@@ -6,5 +6,7 @@
 @source '../../app/Livewire';
 @source '../views/livewire';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Keep FilePond's control spacing above the portal's unlayered reset. */
 @import '../../vendor/filament/forms/dist/index.css';

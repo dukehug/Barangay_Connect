@@ -3,6 +3,7 @@
     dash-page @yield('page-class')
 @endsection
 
+{{--  side bar navigation --}}
 @section('body')
     <aside>
         <div class="brand">
@@ -67,21 +68,30 @@
                 <span class="nav-item-label">My Activity</span>
             </a>
         </nav>
-        <a class="user" href="{{ route('resident.profile') }}" aria-label="My Profile">
-            <span class="avatar" aria-hidden="true">
-                <img src="{{ auth('resident')->user()->profile_image_url ? route('resident.profile.photo') : asset('resident/images/profile-placeholder.svg') }}"
-                    alt="" />
-            </span>
-            <svg class="lucide lucide-user-round mobile-profile-icon" aria-hidden="true" focusable="false"
-                xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="8" r="5" />
-                <path d="M20 21a8 8 0 0 0-16 0" />
-            </svg>
-            <span class="user-name">{{ auth('resident')->user()->first_name }}</span>
-            <span class="user-profile-label">My
-                Profile</span>
-        </a>
+
+        {{--  resident profile --}}
+        <div class="user">
+            <a class="user-profile" href="{{ route('resident.profile') }}" aria-label="View your profile">
+                <span class="avatar" aria-hidden="true">
+                    <img src="{{ auth('resident')->user()->profile_image_url ? route('resident.profile.photo') : asset('resident/images/profile-placeholder.svg') }}"
+                        alt="" />
+                </span>
+                <span class="user-details">
+                    <span class="user-name">{{ auth('resident')->user()->first_name }}</span>
+                    <span class="user-role">(Resident)</span>
+                </span>
+            </a>
+            <form class="user-logout" method="POST" action="{{ route('resident.logout') }}">
+                @csrf
+                <button type="submit" aria-label="Log out" title="Log out">
+                    <svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
+                    </svg>
+                </button>
+            </form>
+        </div>
+
     </aside>
 
     <main class="@yield('main-class')">
@@ -91,20 +101,5 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('resident/js/register.js') }}" defer></script>
-
-    @if (session('registered'))
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Registration successful',
-                text: 'Please use your account to log in.',
-                confirmButtonText: 'Go to Login',
-                allowOutsideClick: false
-            }).then(() => {
-                window.location.href = @json(route('resident.login'));
-            });
-        </script>
-    @endif
+    <script src="{{ asset('resident/js/sidebar.js') }}" defer></script>
 @endpush

@@ -4,7 +4,7 @@
 @section('content')
     <section class="greeting page-head">
         <div>
-            <h1>My Documents</h1>
+            <h2>My Documents</h2>
             <p>Track your barangay document requests.</p>
         </div>
         <a class="request-new" href="{{ route('resident.documents.create') }}">Request New</a>

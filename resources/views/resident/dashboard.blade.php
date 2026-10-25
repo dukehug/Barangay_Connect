@@ -88,6 +88,7 @@
         <ul>
             @forelse ($announcements as $announcement)
                 <li>
+                    <img src="{{ asset('resident/images/imus.jpg') }}" alt="" loading="lazy" width="120" height="84" />
                     <div>
                         <h4>
                             <a href="{{ route('resident.announcement', $announcement) }}">{{ $announcement->title }}</a>
@@ -95,10 +96,45 @@
                         <p class="date">{{ $announcement->posted_at?->format('M d, Y') }}</p>
                         <p>{{ Str::limit(strip_tags($announcement->content), 180) }}</p>
                     </div>
-            </li>@empty
+                </li>
+            @empty
                 <li>No announcements yet.</li>
             @endforelse
         </ul>
+    </section>
+
+    <section class="panel hotlines" aria-labelledby="hotlines-title">
+        <h3 class="hotlines-title" id="hotlines-title">Emergency Hotlines</h3>
+        <div class="hotline-grid">
+            @foreach (['barangay' => 'Barangay Hotline', 'national' => 'National Hotlines'] as $group => $heading)
+                <div class="hotline-col">
+                    <div class="icon {{ $group === 'national' ? 'red' : 'blue' }}">
+                        <svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.2 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.69 2.79a2 2 0 0 1-.45 2.11L8.09 9.89a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.89.33 1.83.56 2.79.69A2 2 0 0 1 22 16.92z" />
+                        </svg>
+                    </div>
+                    <h4>{{ $heading }}</h4>
+                    <p class="sub">{{ $group === 'national' ? 'Official number of national hotlines' : 'Call these hotlines for emergency purposes' }}</p>
+                    <ul class="numbers">
+                        @foreach (config('barangay.hotlines.'.$group, []) as $hotline)
+                            <li>
+                                @isset($hotline['name'])
+                                    <span class="label">{{ $hotline['name'] }}</span>
+                                @endisset
+                                <div class="hotline-links">
+                                    @foreach ($hotline['numbers'] ?? [$hotline] as $number)
+                                        @unless ($loop->first)<span class="hotline-or">or</span>@endunless
+                                        <a href="tel:{{ $number['number'] }}" aria-label="Call {{ $hotline['name'] ?? 'Barangay Hotline' }}: {{ $number['label'] }}">
+                                            {{ $number['label'] }}
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endforeach
+        </div>
     </section>
 
 @endsection

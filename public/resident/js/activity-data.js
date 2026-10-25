@@ -1,5 +1,18 @@
 /** Shared interactions for server-rendered resident records. */
 (() => {
+    if (document.body.classList.contains('dash-page')) {
+        window.addEventListener('pagehide', event => {
+            if (event.persisted) {
+                document.documentElement.style.visibility = 'hidden';
+            }
+        });
+        window.addEventListener('pageshow', event => {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+    }
+
     document.querySelectorAll('[data-open-dialog]').forEach(button => {
         button.addEventListener('click', event => {
             event.preventDefault();

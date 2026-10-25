@@ -5,6 +5,7 @@ use App\Http\Controllers\DocumentPrintController;
 use App\Http\Controllers\ResidentAuthController;
 use App\Http\Controllers\ResidentDocumentController;
 use App\Http\Controllers\ResidentPortalController;
+use App\Http\Middleware\PreventResidentPageCaching;
 use Illuminate\Support\Facades\Route;
 
 Route::name('resident.')->group(function (): void {
@@ -13,7 +14,7 @@ Route::name('resident.')->group(function (): void {
     Route::post('/login', [ResidentAuthController::class, 'login'])->middleware('throttle:5,1')->name('login.store');
     Route::post('/register', [ResidentAuthController::class, 'register'])->middleware('throttle:5,1')->name('register.store');
 
-    Route::middleware('auth:resident')->group(function (): void {
+    Route::middleware([PreventResidentPageCaching::class, 'auth:resident'])->group(function (): void {
         Route::post('/logout', [ResidentAuthController::class, 'logout'])->name('logout');
         Route::get('/dashboard', [ResidentPortalController::class, 'dashboard'])->name('dashboard');
         Route::get('/announcements', [ResidentPortalController::class, 'announcements'])->name('announcements');
