@@ -15,6 +15,21 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DocumentAttachmentController extends Controller
 {
+    public function staffComplaintAttachment(Request $request, Complaint $complaint): StreamedResponse
+    {
+        $employee = $request->user('employee');
+        abort_unless($employee?->is_active && Gate::forUser($employee)->allows('view', $complaint), 403);
+        abort_unless($complaint->attachment_url, 404);
+        $disk = Storage::disk('local')->exists($complaint->attachment_url) ? 'local' : 'public';
+        abort_unless(Storage::disk($disk)->exists($complaint->attachment_url), 404);
+
+        return Storage::disk($disk)->response($complaint->attachment_url, null, [
+            'X-Content-Type-Options' => 'nosniff',
+            'Cache-Control' => 'private, no-store',
+            'Content-Security-Policy' => "frame-ancestors 'self'",
+        ]);
+    }
+
     public function preview(Request $request): StreamedResponse
     {
         $data = $request->validate(['path' => ['required', 'string', 'max:1024']]);

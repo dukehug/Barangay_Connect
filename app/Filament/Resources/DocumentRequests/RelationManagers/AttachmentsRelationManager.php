@@ -41,6 +41,7 @@ class AttachmentsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table->recordTitleAttribute('name')
+            ->recordAction('preview')
             ->modifyQueryUsing(fn (Builder $query): Builder => $query->with('media'))
             ->defaultSort('order_column')->reorderable('order_column')
             ->heading('Attachments')

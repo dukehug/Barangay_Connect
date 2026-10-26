@@ -152,6 +152,19 @@ class DocumentAttachmentTest extends TestCase
         $this->assertDatabaseMissing('request_attachments', ['id' => $new->id]);
     }
 
+    public function test_admin_gallery_cards_open_the_image_preview_action(): void
+    {
+        $attachment = $this->attachment();
+        $this->actingAs(BarangayEmployee::factory()->create(['is_active' => true]), 'employee');
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+
+        $gallery = Livewire::test(AttachmentsRelationManager::class, ['ownerRecord' => $attachment->documentRequest, 'pageClass' => EditDocumentRequest::class]);
+        $this->assertSame('preview', $gallery->instance()->getTable()->getRecordAction($attachment));
+        $gallery->mountTableAction('preview', $attachment)
+            ->assertMountedActionModalSeeHtml('<img')
+            ->assertMountedActionModalSeeHtml('private-documents/preview');
+    }
+
     public function test_admin_reordering_cannot_move_another_requests_files_and_locked_files_cannot_be_deleted(): void
     {
         $attachment = $this->attachment();

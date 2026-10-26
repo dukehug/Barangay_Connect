@@ -41,6 +41,8 @@ Route::name('resident.')->group(function (): void {
 
 Route::get('/admin/request-attachments/{attachment}', [ResidentDocumentController::class, 'staffAttachment'])->middleware('auth:employee')->name('admin.requests.attachment');
 
+Route::get('/admin/complaints/{complaint}/attachment', [DocumentAttachmentController::class, 'staffComplaintAttachment'])->middleware('auth:employee')->name('admin.complaints.attachment');
+
 Route::get('/admin/document-requests/{document}/print', DocumentPrintController::class)->middleware('auth:employee')->name('admin.requests.print');
 
 Route::get('/private-documents/preview', [DocumentAttachmentController::class, 'preview'])->middleware('signed')->name('documents.preview');

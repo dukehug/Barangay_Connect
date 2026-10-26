@@ -5,20 +5,15 @@ namespace App\Filament\Resources\Complaints\Schemas;
 use App\Enums\ComplaintStatus;
 use App\Filament\Resources\Complaints\Pages\EditComplaint;
 use App\Models\Complaint;
-use App\Models\RequestAttachment;
 use App\Models\Resident;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Text;
 use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\Storage;
 
 class ComplaintForm
 {
@@ -58,26 +53,7 @@ class ComplaintForm
 
                 Section::make('Attachments')->icon('heroicon-o-photo')->collapsible()
                     ->schema([
-                        SpatieMediaLibraryFileUpload::make('document')->multiple()->hiddenLabel()->collection('document')
-                            ->disk('private')
-                            ->visibility('private')
-                            ->maxSize(10240)
-                            ->acceptedFileTypes(RequestAttachment::MIME_TYPES)
-                            ->disabled()
-                            ->openable()
-                            ->downloadable()
-                            ->visible(fn (?Complaint $record): bool => $record?->hasMedia('document') ?? false),
-                        FileUpload::make('attachment_url')
-                            ->visible(fn (?Complaint $record): bool => filled($record?->attachment_url))->hiddenLabel()
-                            ->disk(fn (?Complaint $record): string => $record?->attachment_url && Storage::disk('local')->exists($record->attachment_url) ? 'local' : 'public')
-                            ->visibility('private')
-                            ->maxSize(5120)
-                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                            ->disabled()
-                            ->openable()
-                            ->downloadable(),
-                        Text::make('No uploaded attachments.')->color('gray')
-                            ->visible(fn (?Complaint $record): bool => blank($record?->attachment_url) && ! ($record?->hasMedia('document') ?? false)),
+                        View::make('filament.complaint-attachments'),
                     ])->columnSpanFull(),
                 Section::make('Office record & history')->icon('heroicon-o-clock')->collapsible()
                     ->schema([View::make('filament.complaint-summary')]),
