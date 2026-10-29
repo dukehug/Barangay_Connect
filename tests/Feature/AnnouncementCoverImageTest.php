@@ -23,7 +23,7 @@ class AnnouncementCoverImageTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Storage::fake('public');
+        Storage::fake('public', ['url' => config('filesystems.disks.public.url')]);
         Storage::fake('local');
         Filament::setCurrentPanel(Filament::getPanel('admin'));
     }
@@ -58,6 +58,24 @@ class AnnouncementCoverImageTest extends TestCase
     public static function coverFormats(): array
     {
         return ['JPEG' => ['jpg'], 'PNG' => ['png'], 'WebP' => ['webp']];
+    }
+
+    public function test_edit_cover_preview_uses_a_same_origin_url(): void
+    {
+        $this->actingAs(BarangayEmployee::factory()->create(), 'employee');
+        $announcement = Announcement::factory()->create();
+        $media = $announcement->addMedia(UploadedFile::fake()->image('cover.jpg'))->toMediaCollection('cover');
+
+        Livewire::test(EditAnnouncement::class, ['record' => $announcement->id])
+            ->call('callSchemaComponentMethod', 'form.cover', 'getUploadedFiles')
+            ->assertReturned([
+                $media->uuid => [
+                    'name' => $media->name,
+                    'size' => $media->size,
+                    'type' => 'image/jpeg',
+                    'url' => '/storage/'.$media->getPathRelativeToRoot(),
+                ],
+            ]);
     }
 
     public function test_employee_can_keep_replace_and_remove_a_cover(): void
