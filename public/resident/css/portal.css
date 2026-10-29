@@ -704,19 +704,60 @@ summary {
     font-size: 0.95rem;
 }
 .documents-main .workflow-applicant {
-    background: #f8f9fc;
+    display: grid;
+    grid-template-columns: 66px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 20px;
+    background: #eef0f6;
+    color: #242938;
 }
-.documents-main .workflow-applicant h2 {
-    font-size: 0.95rem;
-    color: var(--document-muted);
-    margin-bottom: 10px;
+.workflow-applicant dl {
+    min-width: 0;
+    margin: 0;
 }
-.documents-main .workflow-applicant p {
-    margin: 4px 0;
+.workflow-applicant dl > div {
+    gap: 0 6px;
+    font-size: 0.85rem;
+    line-height: 1.7;
+}
+.workflow-applicant dt {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.workflow-applicant dd {
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
 }
 .documents-main .workflow-applicant a {
-    display: inline-block;
-    margin-top: 10px;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    text-underline-offset: 3px;
+}
+@media (max-width: 540px) {
+    .documents-main .workflow-applicant {
+        grid-template-columns: 48px minmax(0, 1fr);
+        align-items: start;
+        gap: 8px 12px;
+        padding: 18px;
+    }
+    .workflow-applicant img {
+        width: 48px;
+        height: 48px;
+    }
+    .workflow-applicant dl > div {
+        display: block;
+        margin-bottom: 6px;
+    }
+    .workflow-applicant dd {
+        padding-left: 23px;
+    }
+    .documents-main .workflow-applicant a {
+        grid-column: 2;
+        justify-self: start;
+    }
 }
 .documents-main .workflow-form label {
     font-size: 1.2rem;

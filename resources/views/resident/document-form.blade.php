@@ -5,15 +5,35 @@
 @section('content')
     <section class="greeting page-head">
         <div><h1>{{ $document->exists ? 'Revise '.$document->reference : 'New Application' }}</h1><p>Choose a document, add details, then submit.</p></div>
-        <a href="{{ $document->exists ? route('resident.documents.show', $document) : route('resident.documents') }}">Back to requests</a>
+        <a class="request-new" href="{{ $document->exists ? route('resident.documents.show', $document) : route('resident.documents') }}">Back to requests</a>
     </section>
     <form class="workflow-form" data-document-form data-resident-uploads method="POST" enctype="multipart/form-data" action="{{ $document->exists ? route('resident.documents.update', $document) : route('resident.documents.store') }}">
         @csrf
         @if($document->exists) @method('PUT') @endif
-        <section class="workflow-card workflow-applicant">
-            <h2>Applying as</h2>
-            <p>{{ auth('resident')->user()->full_name }} · {{ auth('resident')->user()->resident_address }}</p>
-            <p>{{ auth('resident')->user()->email }} · {{ auth('resident')->user()->contact_number }}</p>
+        @php
+            $resident = auth('resident')->user();
+        @endphp
+        <section class="workflow-card workflow-applicant request-resident" aria-label="Resident profile">
+            <img src="{{ $resident->profile_image_url ? route('resident.profile.photo') : asset('resident/images/profile-placeholder.svg') }}"
+                width="66" height="66" alt="Resident profile photo">
+            <dl>
+                <div>
+                    <dt><span data-modal-icon="user-round" aria-hidden="true"></span> Name:</dt>
+                    <dd>{{ $resident->full_name }}</dd>
+                </div>
+                <div>
+                    <dt><span data-modal-icon="mail" aria-hidden="true"></span> Email:</dt>
+                    <dd>{{ $resident->email ?: 'Not provided' }}</dd>
+                </div>
+                <div>
+                    <dt><span data-modal-icon="map-pin" aria-hidden="true"></span> Address:</dt>
+                    <dd>{{ $resident->resident_address ?: 'Not provided' }}</dd>
+                </div>
+                <div>
+                    <dt><span data-modal-icon="phone" aria-hidden="true"></span> Phone:</dt>
+                    <dd>{{ $resident->contact_number ?: 'Not provided' }}</dd>
+                </div>
+            </dl>
             <a href="{{ route('resident.profile') }}">Edit profile</a>
         </section>
         <section class="workflow-card">
