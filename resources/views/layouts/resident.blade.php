@@ -78,7 +78,6 @@
                 </span>
                 <span class="user-details">
                     <span class="user-name">{{ auth('resident')->user()->first_name }}</span>
-                    <span class="user-role">(Resident)</span>
                 </span>
             </a>
             <form class="user-logout" method="POST" action="{{ route('resident.logout') }}">
