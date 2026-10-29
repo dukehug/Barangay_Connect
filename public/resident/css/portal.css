@@ -149,6 +149,13 @@ summary {
 }
 
 /* Announcement typography uses the existing resident portal colors and spacing. */
+.announcement-cover {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0 0 24px;
+    border-radius: 8px;
+}
 .announcement-content {
     display: flow-root;
     min-width: 0;

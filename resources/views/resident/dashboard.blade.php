@@ -88,7 +88,7 @@
         <ul>
             @forelse ($announcements as $announcement)
                 <li>
-                    <img src="{{ asset('resident/images/imus.jpg') }}" alt="" loading="lazy" width="120" height="84" />
+                    <img src="{{ $announcement->getFirstMediaUrl('cover') }}" alt="" loading="lazy" width="120" height="84" />
                     <div>
                         <h4>
                             <a href="{{ route('resident.announcement', $announcement) }}">{{ $announcement->title }}</a>

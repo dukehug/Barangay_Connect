@@ -34,6 +34,10 @@
                 <dd>{{ $announcement->category }}</dd>
             </div>
         </dl>
+        @if ($announcement->hasMedia('cover'))
+            <img class="announcement-cover" src="{{ $announcement->getFirstMediaUrl('cover') }}"
+                alt="{{ $announcement->title }}" decoding="async">
+        @endif
         <div @class([
             'announcement-content',
             'announcement-content-plain' =>

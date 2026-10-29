@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Announcements\Tables;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -15,6 +16,12 @@ class AnnouncementsTable
     {
         return $table
             ->columns([
+                SpatieMediaLibraryImageColumn::make('cover')
+                    ->label('Cover')
+                    ->collection('cover')
+                    ->visibility('public')
+                    ->imageWidth(80)
+                    ->imageHeight(45),
                 TextColumn::make('title')
                     ->searchable(),
                 TextColumn::make('category')

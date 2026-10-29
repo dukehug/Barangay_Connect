@@ -2,12 +2,13 @@
 
 namespace App\Filament\Resources\Announcements\Schemas;
 
+use App\Models\Announcement;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
-use Filament\Forms\Components\DatePicker;
 
 class AnnouncementForm
 {
@@ -32,6 +33,18 @@ class AnnouncementForm
                 Toggle::make('published')
                     ->default(false),
 
+                SpatieMediaLibraryFileUpload::make('cover')
+                    ->label('Cover image')
+                    ->collection('cover')
+                    ->disk('public')
+                    ->visibility('public')
+                    ->image()
+                    ->acceptedFileTypes(Announcement::COVER_MIME_TYPES)
+                    ->maxSize(5120)
+                    ->imageEditor()
+                    ->imageEditorAspectRatios(['16:9'])
+                    ->helperText('Optional. JPG, PNG or WebP, up to 5 MB. Recommended: 1200 × 675 pixels (16:9). Without a cover, announcement cards use the default image.')
+                    ->columnSpanFull(),
 
                 RichEditor::make('content')
                     ->toolbarButtons([

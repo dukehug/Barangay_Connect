@@ -18,7 +18,7 @@
         <div class="announce-list">
             @forelse ($announcements as $announcement)
                 <a class="announce-card" href="{{ route('resident.announcement', $announcement) }}">
-                    <img src="{{ asset('resident/images/imus.jpg') }}" alt="" loading="lazy">
+                    <img src="{{ $announcement->getFirstMediaUrl('cover') }}" alt="" loading="lazy">
                     <div class="announce-body">
                         <h3>{{ $announcement->title }}</h3>
                         <div class="announce-meta">

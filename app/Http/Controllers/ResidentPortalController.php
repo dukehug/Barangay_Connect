@@ -23,7 +23,7 @@ class ResidentPortalController extends Controller
 {
     private function publishedAnnouncements(): Builder
     {
-        return Announcement::query()->where('published', true)->whereNotNull('posted_at')->where('posted_at', '<=', now());
+        return Announcement::query()->with('media')->where('published', true)->whereNotNull('posted_at')->where('posted_at', '<=', now());
     }
 
     public function dashboard(): View
