@@ -1662,11 +1662,11 @@ summary {
 }
 @media (max-width: 760px) {
     .dash-page aside {
-        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-template-columns: repeat(5, minmax(0, 1fr));
     }
     .dash-page .user {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        grid-column: 5 / 7;
+        grid-template-columns: minmax(0, 1fr);
+        grid-column: 5;
         grid-row: 1;
         justify-content: space-around;
         gap: 4px;
@@ -1675,6 +1675,9 @@ summary {
         margin: 0;
         padding: 0;
         border: 0;
+    }
+    .dash-page .user-logout {
+        display: none;
     }
     .dash-page .user-profile {
         flex: 0 1 auto;
