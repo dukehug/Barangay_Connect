@@ -1,7 +1,7 @@
-@if (request()->routeIs('resident.documents*', 'resident.complaints*'))
+@if (request()->routeIs('resident.documents*', 'resident.complaints*', 'resident.login'))
     @php
         $notice = match (true) {
-            $errors->any() => ['icon' => 'error', 'title' => 'Please check your submission', 'message' => implode("\n", $errors->all())],
+            $errors->any() => ['icon' => 'error', 'title' => request()->routeIs('resident.login') ? 'Login failed' : 'Please check your submission', 'message' => implode("\n", $errors->all())],
             (bool) session('complaint_submitted') => ['icon' => 'success', 'title' => 'Submission Successful', 'message' => 'Your complaint has been submitted successfully.'],
             (bool) session('document_submitted') => ['icon' => 'success', 'title' => 'Submission Successful', 'message' => 'Your document has been submitted successfully.'],
             (bool) session('document_responded') => ['icon' => 'success', 'title' => 'Response Sent', 'message' => 'Your response has been sent successfully.'],
