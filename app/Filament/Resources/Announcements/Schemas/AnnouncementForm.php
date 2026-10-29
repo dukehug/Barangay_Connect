@@ -51,12 +51,6 @@ class AnnouncementForm
                     ->preventFileAttachmentPathTampering()
                     ->required()
                     ->columnSpanFull(),
-                
-                DatePicker::make('date_tested')
-                    ->label('Date Posted')
-                    ->native(false)
-                    ->weekStartsOnMonday()
-                    ->displayFormat('d/m/Y'),
             ]);
     }
 }
