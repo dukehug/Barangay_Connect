@@ -17,7 +17,7 @@
     </style>
 </head>
 <body>
-    <div class="toolbar"><button type="button" id="print-document">Print document</button><p>Check the content before printing. Obtain the required signature, then record the next step in the application. Printing does not mark the document as signed or released.</p></div>
+    <div class="toolbar"><button type="button" id="print-document">Print document</button></div>
     <main>
         <header>Republic of the Philippines<br><strong>{{ config('barangay.office_name', 'Barangay Office') }}</strong></header>
         <h1>{{ $document->documentType->document_type_name }}</h1>
