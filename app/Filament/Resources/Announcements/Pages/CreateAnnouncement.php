@@ -10,6 +10,11 @@ class CreateAnnouncement extends CreateRecord
 {
     protected static string $resource = AnnouncementResource::class;
 
+    protected function getRedirectUrl(): string
+    {
+        return AnnouncementResource::getUrl('index');
+    }
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['staff_id'] = Auth::id();
@@ -18,5 +23,4 @@ class CreateAnnouncement extends CreateRecord
 
         return $data;
     }
-
 }

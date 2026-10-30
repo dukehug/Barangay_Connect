@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Resources\Announcements\AnnouncementResource;
 use App\Filament\Resources\Announcements\Pages\CreateAnnouncement;
 use App\Filament\Resources\Announcements\Pages\EditAnnouncement;
 use App\Models\Announcement;
@@ -28,7 +29,8 @@ class AnnouncementRichContentTest extends TestCase
             'content' => $content,
             'category' => 'General',
             'published' => true,
-        ])->call('create')->assertHasNoFormErrors();
+        ])->call('create')->assertHasNoFormErrors()
+            ->assertRedirect(AnnouncementResource::getUrl('index'));
 
         $announcement = Announcement::sole();
         $this->assertSame($employee->id, $announcement->staff_id);
