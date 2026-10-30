@@ -1,7 +1,7 @@
-/** Shared SweetAlert2 notices for resident documents and complaints. */
+/** Shared SweetAlert2 notices for resident forms. */
 (() => {
     const fire = options => {
-        const target = document.querySelector('dialog[open]') || document.body;
+        const target = options.target || document.querySelector('dialog[open]') || document.body;
         if (!window.Swal) {
             const notice = document.createElement('p');
             notice.className = 'portal-message';
@@ -32,7 +32,7 @@
             notice.hidden = true;
             fire({icon: notice.dataset.icon, title: notice.dataset.title, text: notice.dataset.message});
         }
-        document.querySelectorAll('[data-document-form], #complaintForm').forEach(form => {
+        document.querySelectorAll('[data-document-form], #complaintForm, #profileForm').forEach(form => {
             let showingValidation = false;
             form.addEventListener('invalid', event => {
                 event.preventDefault();

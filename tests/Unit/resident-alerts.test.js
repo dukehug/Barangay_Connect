@@ -37,6 +37,13 @@ test('notices inside a native dialog stay in its top layer', async () => {
     assert.equal(page.calls[0].target, dialog);
 });
 
+test('photo notices can target the crop editor above the profile dialog', async () => {
+    const page = alertPage({id: 'profileEdit'});
+    const editor = {id: 'photoEditor'};
+    await page.window.ResidentAlerts.fire({title: 'Unable to open photo', target: editor});
+    assert.equal(page.calls[0].target, editor);
+});
+
 function confirmationForm(result, selector) {
     let listener;
     let submissions = 0;

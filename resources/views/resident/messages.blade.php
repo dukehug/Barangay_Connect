@@ -1,10 +1,11 @@
-@if (request()->routeIs('resident.documents*', 'resident.complaints*', 'resident.login'))
+@if (request()->routeIs('resident.documents*', 'resident.complaints*', 'resident.login', 'resident.profile'))
     @php
         $notice = match (true) {
             $errors->any() => ['icon' => 'error', 'title' => request()->routeIs('resident.login') ? 'Login failed' : 'Please check your submission', 'message' => implode("\n", $errors->all())],
             (bool) session('complaint_submitted') => ['icon' => 'success', 'title' => 'Submission Successful', 'message' => 'Your complaint has been submitted successfully.'],
             (bool) session('document_submitted') => ['icon' => 'success', 'title' => 'Submission Successful', 'message' => 'Your document has been submitted successfully.'],
             (bool) session('document_responded') => ['icon' => 'success', 'title' => 'Response Sent', 'message' => 'Your response has been sent successfully.'],
+            request()->routeIs('resident.profile') && (bool) session('status') => ['icon' => 'success', 'title' => 'Profile updated', 'message' => session('status')],
             (bool) session('status') => ['icon' => 'success', 'title' => 'Done', 'message' => session('status')],
             default => null,
         };

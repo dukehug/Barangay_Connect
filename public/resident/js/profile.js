@@ -37,8 +37,6 @@
     const canvas = document.getElementById("photoCanvas");
     const context = canvas.getContext("2d");
     const zoom = document.getElementById("photoZoom");
-    const message = document.getElementById("photoMessage");
-    const error = document.getElementById("photoEditorError");
     const status = document.getElementById("photoEditorStatus");
     const savePhoto = document.getElementById("savePhoto");
     const zoomOut = document.getElementById("zoomOutPhoto");
@@ -51,6 +49,15 @@
         baseScale = 1;
     let drag = null;
     let loadVersion = 0;
+
+    function showPhotoAlert(icon, title, text) {
+        return window.ResidentAlerts.fire({
+            icon,
+            title,
+            text,
+            target: editor.open ? editor : profileDialog.open ? profileDialog : document.body,
+        });
+    }
 
     function updateControls() {
         const unavailable = !source || !context;
@@ -100,7 +107,7 @@
         drag = null;
         activePicker.value = "";
         updateControls();
-        activePicker.focus();
+        if (!profileDialog.open) activePicker.focus();
     });
     canvas.addEventListener("pointerdown", event => {
         if (event.button !== 0 || drag) return;
@@ -151,14 +158,12 @@
             }));
             preparedInput.files = transfer.files;
             profilePhoto.src = data;
-            message.textContent = "Photo prepared. Save your profile to upload it.";
             document.getElementById("preparedPhoto").src = data;
             document.getElementById("profilePhotoPreview").hidden = false;
-            document.getElementById("profilePhotoMessage").textContent = "";
             editor.close();
             if (!profileDialog.open) profileDialog.showModal();
         } catch {
-            error.textContent = "Unable to prepare your photo. Your previous photo is unchanged. Please try again.";
+            showPhotoAlert("error", "Unable to prepare photo", "Unable to prepare your photo. Your previous photo is unchanged. Please try again.");
         }
     });
     for (const picker of [photoInput, profilePicker]) {
@@ -166,16 +171,13 @@
             const file = picker.files[0];
             if (!file) return;
             activePicker = picker;
-            const selectionMessage = picker === photoInput ? message : document.getElementById("profilePhotoMessage");
             const version = ++loadVersion;
-            selectionMessage.textContent = "";
             if (!["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 5 * 1024 * 1024) {
-                selectionMessage.textContent = "Choose a JPG, PNG, or WebP image up to 5 MB.";
+                showPhotoAlert("warning", "Invalid photo", "Choose a JPG, PNG, or WebP image up to 5 MB.");
                 picker.value = "";
                 return;
             }
             source = null;
-            error.textContent = "";
             status.textContent = "Loading your photo…";
             context?.clearRect(0, 0, photoSize, photoSize);
             updateControls();
@@ -187,7 +189,7 @@
                 if (version !== loadVersion) return;
                 status.textContent = "";
                 if (!context || !image.naturalWidth || !image.naturalHeight) {
-                    error.textContent = "Photo editing is unavailable for this image. Cancel and choose another photo.";
+                    showPhotoAlert("error", "Unable to edit photo", "Photo editing is unavailable for this image. Cancel and choose another photo.");
                     return;
                 }
                 source = image;
@@ -200,7 +202,7 @@
                 URL.revokeObjectURL(url);
                 if (version !== loadVersion) return;
                 status.textContent = "";
-                error.textContent = "This image could not be opened. Cancel and choose another photo.";
+                showPhotoAlert("error", "Unable to open photo", "This image could not be opened. Cancel and choose another photo.");
             };
             image.src = url;
         });

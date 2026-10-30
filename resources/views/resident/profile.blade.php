@@ -20,8 +20,6 @@
                 <span class="avatar-edit">Change photo</span>
                 <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp" class="photo-file-input" />
             </label>
-            <p id="photoMessage" class="photo-message" role="status">
-            </p>
             <h3 class="profile-name">{{ $resident->full_name }}</h3>
             <span class="profile-badge">Barangay Resident</span>
             <p class="profile-meta">Date Registered: {{ $resident->created_at->format('F j, Y') }}</p>
@@ -134,8 +132,6 @@
             <button type="button" id="zoomInPhoto" aria-label="Zoom in">+</button>
         </div>
         <p id="photoEditorStatus" class="photo-message" role="status"></p>
-        <p id="photoEditorError" class="photo-message" role="alert">
-        </p>
         <div class="photo-editor-actions">
             <button type="button" id="resetPhoto">Reset</button>
             <button type="button" id="cancelPhoto">Cancel</button>
@@ -156,9 +152,6 @@
             </div>
             <button type="button" data-close-dialog aria-label="Close profile editor">×</button>
         </header>
-        @if ($errors->any())
-            @include('resident.messages')
-        @endif
         <form id="profileForm" class="portal-form resident-details-form" method="POST" enctype="multipart/form-data"
             action="{{ route('resident.profile.update') }}">
             @csrf
@@ -237,7 +230,6 @@
                                 <img id="preparedPhoto" alt="Preview of your new profile photo" width="64" height="64">
                                 <p>Photo ready. Click Save profile to upload and save your changes.</p>
                             </div>
-                            <p id="profilePhotoMessage" class="photo-message" role="status"></p>
                             <p id="profilePhotoHint" class="resident-field-hint">JPG, PNG or WebP, up to 5 MB. After choosing a photo, drag and zoom to crop it, then select Use this photo.</p>
                         </div>
                     </section>
