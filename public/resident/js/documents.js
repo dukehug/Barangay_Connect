@@ -1,5 +1,7 @@
 (() => {
-    document.getElementById('pageSize')?.addEventListener('change', event => event.target.form.requestSubmit());
+    document.querySelectorAll('#pageSize, #recordType').forEach(select => {
+        select.addEventListener('change', event => event.target.form.requestSubmit());
+    });
     const confirmSubmission = (selector, title, text, confirmButtonText) => {
         document.querySelectorAll(selector).forEach(form => {
             let approved = false;

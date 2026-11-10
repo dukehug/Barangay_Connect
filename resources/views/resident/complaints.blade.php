@@ -14,10 +14,19 @@
         <form class="documents-toolbar" method="GET" action="{{ route('resident.complaints') }}">
             <div class="document-search">
                 <label for="recordSearch">Search complaints</label>
-                <input type="search" id="recordSearch" name="search" value="{{ request('search') }}" placeholder="Search number, category, content or status" maxlength="255">
+                <input type="search" id="recordSearch" name="search" value="{{ request('search') }}" placeholder="Search number, content or status" maxlength="20">
             </div>
             <button class="btn" type="submit">Search</button>
-            @if(request()->filled('search'))<a class="documents-clear" href="{{ route('resident.complaints') }}">Clear</a>@endif
+            @if((request()->filled('search') || request()->filled('category')))<a class="documents-clear" href="{{ route('resident.complaints') }}">Clear</a>@endif
+            <div class="document-type-filter">
+            
+                <select id="recordType" name="category">
+                    <option value="">All categories</option>
+                    @foreach ($complaintCategories as $category)
+                        <option value="{{ $category }}" @selected(request('category') === $category)>{{ $category }}</option>
+                    @endforeach
+                </select>
+            </div>
             <div class="document-page-size">
                 <label for="pageSize">Show</label>
                 <select id="pageSize" name="per_page">
@@ -51,10 +60,19 @@
                         </tr>
                     @empty
                         <tr><td colspan="6" class="documents-empty">
-                            <span class="documents-empty-icon" aria-hidden="true">▤</span>
-                            <strong>{{ request()->filled('search') ? 'No matching complaints' : 'Your complaints will appear here' }}</strong>
-                            <p>{{ request()->filled('search') ? 'Try another category or reference number.' : 'Report an issue to the barangay office.' }}</p>
-                            @if(request()->filled('search'))<a href="{{ route('resident.complaints') }}">Clear search →</a>@endif
+                            <span class="documents-empty-icon" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-5 5V5a2 2 0 0 1 2-2h15a2 2 0 0 1 2 2z" />
+                                    <path d="M8 8h7M8 12h5" />
+                                </svg>
+                            </span>
+                            <strong>{{ (request()->filled('search') || request()->filled('category')) ? 'No matching complaints' : 'Your complaints will appear here' }}</strong>
+                            <p>{{ (request()->filled('search') || request()->filled('category')) ? 'Try another search or category.' : 'Report an issue to the barangay office.' }}</p>
+                            @if(request()->filled('search') || request()->filled('category'))
+                                <a href="{{ route('resident.complaints') }}">Clear filters →</a>
+                            @else
+                                <button class="btn" type="button" data-open-dialog="complaintDialog">Create a Complaint →</button>
+                            @endif
                         </td></tr>
                     @endforelse
                 </tbody>
@@ -137,6 +155,6 @@
 
 @push('scripts')
     @vite('resources/js/complaint-location.js')
-    <script src="{{ asset('resident/js/complaints.js') }}" defer></script>
+    <script src="{{ asset('resident/js/complaints.js') }}?v={{ filemtime(public_path('resident/js/complaints.js')) }}" defer></script>
 
 @endpush

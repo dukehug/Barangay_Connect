@@ -535,6 +535,7 @@ summary {
     margin: 0 0 22px;
     gap: 12px;
     align-items: flex-end;
+    flex-wrap: wrap;
 }
 .documents-list-page .document-search {
     width: min(100%, 380px);
@@ -549,8 +550,26 @@ summary {
     border-color: #e2e5ed;
     border-radius: 9px;
 }
-.documents-list-page .document-page-size {
+.documents-list-page .document-type-filter {
     margin-left: auto;
+    width: min(100%, 220px);
+}
+.document-type-filter label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+}
+.document-type-filter select {
+    width: 100%;
+    height: 42px;
+    margin: 0;
+    border-color: #e2e5ed;
+    border-radius: 9px;
+    background-color: #fff;
+    font-size: 0.8rem;
+}
+.documents-list-page .document-page-size {
+    margin-left: 0;
     color: var(--document-muted);
 }
 .documents-list-page .documents-toolbar .btn {
@@ -668,6 +687,9 @@ summary {
 }
 .documents-empty p {
     margin: 8px 0 18px;
+}
+.documents-empty form {
+    text-align: center;
 }
 .documents-empty a {
     color: var(--blue);
@@ -835,9 +857,12 @@ summary {
         flex: 1;
         min-width: 140px;
     }
-    .documents-list-page .document-page-size {
+    .documents-list-page .document-type-filter {
         width: 100%;
         margin: 0;
+    }
+    .documents-list-page .document-page-size {
+        margin-left: auto;
         justify-content: flex-end;
     }
     .documents-request-table,

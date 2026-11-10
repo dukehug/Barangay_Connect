@@ -13,10 +13,18 @@
         <form class="documents-toolbar" method="GET" action="{{ route('resident.documents') }}">
             <div class="document-search">
                 <label for="recordSearch">Search documents</label>
-                <input type="search" id="recordSearch" name="search" value="{{ request('search') }}" placeholder="Search request, type, purpose or status" maxlength="255">
+                <input type="search" id="recordSearch" name="search" value="{{ request('search') }}" placeholder="Search request, type, purpose or status" maxlength="20">
             </div>
             <button class="btn" type="submit">Search</button>
-            @if(request()->filled('search'))<a class="documents-clear" href="{{ route('resident.documents') }}">Clear</a>@endif
+            @if((request()->filled('search') || request()->filled('document_type_id')))<a class="documents-clear" href="{{ route('resident.documents') }}">Clear</a>@endif
+            <div class="document-type-filter">
+                <select id="recordType" name="document_type_id">
+                    <option value="">All document types</option>
+                    @foreach ($documentTypes as $type)
+                        <option value="{{ $type->id }}" @selected((string) request('document_type_id') === (string) $type->id)>{{ $type->document_type_name }}</option>
+                    @endforeach
+                </select>
+            </div>
             <div class="document-page-size">
                 <label for="pageSize">Show</label>
                 <select id="pageSize" name="per_page">
@@ -50,10 +58,21 @@
                         </tr>
                     @empty
                         <tr><td colspan="6" class="documents-empty">
-                            <span class="documents-empty-icon" aria-hidden="true">▤</span>
-                            <strong>{{ request()->filled('search') ? 'No matching requests' : 'Your requests will appear here' }}</strong>
-                            <p>{{ request()->filled('search') ? 'Try another name or reference number.' : 'Start by choosing the document you need.' }}</p>
-                            <a href="{{ request()->filled('search') ? route('resident.documents') : route('resident.documents.create') }}">{{ request()->filled('search') ? 'Clear search' : 'Create a request' }} →</a>
+                            <span class="documents-empty-icon" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                    <path d="M14 2v6h6M8 13h8M8 17h5" />
+                                </svg>
+                            </span>
+                            <strong>{{ (request()->filled('search') || request()->filled('document_type_id')) ? 'No matching requests' : 'Your requests will appear here' }}</strong>
+                            <p>{{ (request()->filled('search') || request()->filled('document_type_id')) ? 'Try another search or document type.' : 'Start by choosing the document you need.' }}</p>
+                            @if(request()->filled('search') || request()->filled('document_type_id'))
+                                <a href="{{ route('resident.documents') }}">Clear filters →</a>
+                            @else
+                                <form method="GET" action="{{ route('resident.documents.create') }}">
+                                    <button class="btn" type="submit">Create a request →</button>
+                                </form>
+                            @endif
                         </td></tr>
                     @endforelse
                 </tbody>

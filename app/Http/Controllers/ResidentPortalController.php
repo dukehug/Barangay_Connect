@@ -58,39 +58,59 @@ class ResidentPortalController extends Controller
     public function documents(Request $request): View
     {
         app(DocumentWorkflow::class)->expire();
-        $filters = $this->recordFilters($request);
+        $filters = $this->recordFilters($request) + $request->validate([
+            'document_type_id' => ['nullable', 'integer', 'exists:document_types,id'],
+        ]);
         $documents = $request->user('resident')->documentRequests()->with('documentType');
+        if (! empty($filters['document_type_id'])) {
+            $documents->where('document_type_id', $filters['document_type_id']);
+        }
         if ($filters['search'] !== '') {
-            $search = $filters['search'];
+            $search = mb_strtolower($filters['search']);
             $documents->where(function (Builder $query) use ($search): void {
-                $query->where('purpose', 'like', '%'.$search.'%')
-                    ->orWhere('reference', 'like', '%'.strtoupper($search).'%')
-                    ->orWhereHas('documentType', fn (Builder $type): Builder => $type->where('document_type_name', 'like', '%'.$search.'%'))
+                $query->whereRaw('LOWER(purpose) LIKE ?', ['%'.$search.'%'])
+                    ->orWhereRaw('LOWER(reference) LIKE ?', ['%'.$search.'%'])
+                    ->orWhereHas('documentType', fn (Builder $type): Builder => $type->whereRaw('LOWER(document_type_name) LIKE ?', ['%'.$search.'%']))
                     ->orWhereIn('status', $this->matchingStatuses(RequestStatus::cases(), $search));
             });
         }
 
         return view('resident.documents', [
             'documents' => $documents->latest()->orderByDesc('id')->paginate($filters['per_page'])->withQueryString(),
-            'documentTypes' => DocumentType::query()->where('is_active', true)->orderBy('document_type_name')->get(),
+            'documentTypes' => DocumentType::query()->where('is_active', true)
+                ->orWhereHas('documentRequests', fn (Builder $query): Builder => $query->where('resident_id', $request->user('resident')->id))
+                ->orderBy('document_type_name')->get(),
         ]);
     }
 
     public function complaints(Request $request): View
     {
-        $filters = $this->recordFilters($request);
+        $filters = $this->recordFilters($request) + $request->validate([
+            'category' => ['nullable', 'string', 'max:255'],
+        ]);
         $complaints = $request->user('resident')->complaints()->with(['media', 'latestStaffUpdate']);
+        if (isset($filters['category']) && $filters['category'] !== '') {
+            $complaints->where('complaint_type', $filters['category']);
+        }
         if ($filters['search'] !== '') {
-            $search = $filters['search'];
+            $search = mb_strtolower($filters['search']);
             $complaints->where(function (Builder $query) use ($search): void {
-                $query->where('content', 'like', '%'.$search.'%')
-                    ->orWhere('complaint_type', 'like', '%'.$search.'%')
-                    ->orWhere('reference', 'like', '%'.strtoupper($search).'%')
+                $query->whereRaw('LOWER(content) LIKE ?', ['%'.$search.'%'])
+                    ->orWhereRaw('LOWER(complaint_type) LIKE ?', ['%'.$search.'%'])
+                    ->orWhereRaw('LOWER(reference) LIKE ?', ['%'.$search.'%'])
                     ->orWhereIn('status', $this->matchingStatuses(ComplaintStatus::cases(), $search));
             });
         }
 
-        return view('resident.complaints', ['complaintTypes' => ComplaintType::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get(), 'complaints' => $complaints->latest()->orderByDesc('id')->paginate($filters['per_page'])->withQueryString()]);
+        $complaintTypes = ComplaintType::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get();
+
+        return view('resident.complaints', [
+            'complaintTypes' => $complaintTypes,
+            'complaintCategories' => $complaintTypes->pluck('name')
+                ->merge($request->user('resident')->complaints()->distinct()->pluck('complaint_type'))
+                ->unique()->sort()->values(),
+            'complaints' => $complaints->latest()->orderByDesc('id')->paginate($filters['per_page'])->withQueryString(),
+        ]);
     }
 
     public function showComplaint(Request $request, int $complaint): View
@@ -180,7 +200,7 @@ class ResidentPortalController extends Controller
     private function recordFilters(Request $request): array
     {
         $validated = $request->validate([
-            'search' => ['nullable', 'string', 'max:255'],
+            'search' => ['nullable', 'string', 'max:200'],
             'per_page' => ['nullable', 'integer', 'in:2,5,10,25'],
         ]);
 
