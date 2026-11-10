@@ -13,7 +13,7 @@
         <form class="documents-toolbar" method="GET" action="{{ route('resident.documents') }}">
             <div class="document-search">
                 <label for="recordSearch">Search documents</label>
-                <input type="search" id="recordSearch" name="search" value="{{ request('search') }}" placeholder="Search request, type, purpose or status" maxlength="20">
+                <input type="search" id="recordSearch" name="search" value="{{ request('search') }}" placeholder="Search request, type, purpose or status" maxlength="100">
             </div>
             <button class="btn" type="submit">Search</button>
             @if((request()->filled('search') || request()->filled('document_type_id')))<a class="documents-clear" href="{{ route('resident.documents') }}">Clear</a>@endif

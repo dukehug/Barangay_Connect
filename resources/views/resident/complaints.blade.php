@@ -14,7 +14,7 @@
         <form class="documents-toolbar" method="GET" action="{{ route('resident.complaints') }}">
             <div class="document-search">
                 <label for="recordSearch">Search complaints</label>
-                <input type="search" id="recordSearch" name="search" value="{{ request('search') }}" placeholder="Search number, content or status" maxlength="20">
+                <input type="search" id="recordSearch" name="search" value="{{ request('search') }}" placeholder="Search number, content or status" maxlength="100">
             </div>
             <button class="btn" type="submit">Search</button>
             @if((request()->filled('search') || request()->filled('category')))<a class="documents-clear" href="{{ route('resident.complaints') }}">Clear</a>@endif
