@@ -69,7 +69,7 @@
                             <strong>{{ (request()->filled('search') || request()->filled('category')) ? 'No matching complaints' : 'Your complaints will appear here' }}</strong>
                             <p>{{ (request()->filled('search') || request()->filled('category')) ? 'Try another search or category.' : 'Report an issue to the barangay office.' }}</p>
                             @if(request()->filled('search') || request()->filled('category'))
-                                <a href="{{ route('resident.complaints') }}">Clear filters →</a>
+                                <a href="{{ route('resident.complaints') }}">Back to complaints →</a>
                             @else
                                 <button class="btn" type="button" data-open-dialog="complaintDialog">Create a Complaint →</button>
                             @endif

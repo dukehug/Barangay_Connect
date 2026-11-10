@@ -67,7 +67,7 @@
                             <strong>{{ (request()->filled('search') || request()->filled('document_type_id')) ? 'No matching requests' : 'Your requests will appear here' }}</strong>
                             <p>{{ (request()->filled('search') || request()->filled('document_type_id')) ? 'Try another search or document type.' : 'Start by choosing the document you need.' }}</p>
                             @if(request()->filled('search') || request()->filled('document_type_id'))
-                                <a href="{{ route('resident.documents') }}">Clear filters →</a>
+                                <a href="{{ route('resident.documents') }}">Back to requests →</a>
                             @else
                                 <form method="GET" action="{{ route('resident.documents.create') }}">
                                     <button class="btn" type="submit">Create a request →</button>
