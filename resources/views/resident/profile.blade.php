@@ -160,11 +160,11 @@
             <div class="resident-section-grid">
                 <section class="resident-form-section" aria-labelledby="profilePersonalTitle">
                     <header class="resident-section-heading">
-                        <h3 id="profilePersonalTitle">Personal information</h3>
-                        <p>Your name and personal details.</p>
+                        <h3 id="profilePersonalTitle">Personal Information</h3>
+                        
                     </header>
                     <div class="resident-field-grid resident-name-grid">
-                        @foreach (['first_name' => 'First name', 'middle_name' => 'Middle name', 'last_name' => 'Last name'] as $field => $label)
+                        @foreach (['first_name' => 'First Name', 'middle_name' => 'Middle Name', 'last_name' => 'Last Name'] as $field => $label)
                             <div class="resident-field">
                                 <label for="{{ $field }}">{{ $label }}</label>
                                 <input id="{{ $field }}" name="{{ $field }}" type="text"
@@ -174,7 +174,7 @@
                     </div>
                     <div class="resident-field-grid">
                         <div class="resident-field">
-                            <label for="birth_date">Birth date</label>
+                            <label for="birth_date">Birth Date</label>
                             <input type="date" id="birth_date" name="birth_date" max="{{ date('Y-m-d') }}" required
                                 value="{{ old('birth_date', $resident->birth_date->format('Y-m-d')) }}">
                         </div>
@@ -196,11 +196,11 @@
                 <div class="resident-section-stack">
                     <section class="resident-form-section" aria-labelledby="profileContactTitle">
                         <header class="resident-section-heading">
-                            <h3 id="profileContactTitle">Contact information</h3>
-                            <p>Where we can reach you.</p>
+                            <h3 id="profileContactTitle">Contact Information</h3>
+                            
                         </header>
                         <div class="resident-field-grid">
-                            @foreach (['email' => 'Email', 'contact_number' => 'Contact number'] as $field => $label)
+                            @foreach (['email' => 'Email', 'contact_number' => 'Contact Number'] as $field => $label)
                                 <div class="resident-field">
                                     <label for="{{ $field }}">{{ $label }}</label>
                                     <input id="{{ $field }}" name="{{ $field }}"
@@ -217,11 +217,11 @@
                     </section>
                     <section class="resident-form-section" aria-labelledby="profilePhotoTitle">
                         <header class="resident-section-heading">
-                            <h3 id="profilePhotoTitle">Profile photo</h3>
+                            <h3 id="profilePhotoTitle">Profile Photo</h3>
                             <p>Add a photo so your profile is easy to recognize.</p>
                         </header>
                         <div class="resident-field">
-                            <label for="photo">Choose a photo</label>
+                            <label for="photo">Choose a Photo</label>
                             <input type="file" id="photo"
                                 accept="image/jpeg,image/png,image/webp" aria-describedby="profilePhotoHint">
                             <input type="file" name="photo" data-cropped-photo hidden
@@ -237,7 +237,7 @@
             </div>
             <footer class="resident-form-actions">
                 <button class="resident-secondary-action" type="button" data-close-dialog>Cancel</button>
-                <button class="btn" type="submit">Save profile</button>
+                <button class="btn" type="submit">Save Profile</button>
             </footer>
         </form>
     </dialog>
