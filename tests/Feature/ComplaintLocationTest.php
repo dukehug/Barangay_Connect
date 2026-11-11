@@ -33,7 +33,9 @@ class ComplaintLocationTest extends TestCase
         $this->assertSame('14.4297000', $complaint->latitude);
         $this->assertSame('120.9367000', $complaint->longitude);
         $this->assertSame('https://www.google.com/maps/search/?api=1&query=14.4297000%2C120.9367000', $complaint->googleMapsUrl());
-        $this->get(route('resident.complaints.show', $complaint))->assertOk()->assertSee($complaint->googleMapsUrl());
+        $this->get(route('resident.complaints.show', $complaint))->assertOk()->assertSee($complaint->googleMapsUrl())
+            ->assertSee('data-location-preview-map', false)
+            ->assertSee('data-latitude="14.4297000"', false)->assertSee('data-longitude="120.9367000"', false);
         $this->actingAs(Resident::factory()->create(), 'resident')->get(route('resident.complaints.show', $complaint))->assertNotFound();
     }
 
@@ -48,6 +50,7 @@ class ComplaintLocationTest extends TestCase
         $this->assertNull($complaint->latitude);
         $this->assertNull($complaint->longitude);
         $this->assertNull($complaint->googleMapsUrl());
+        $this->get(route('resident.complaints.show', $complaint))->assertOk()->assertDontSee('data-location-preview-map', false);
     }
 
     public function test_validation_errors_preserve_the_selected_coordinates(): void

@@ -30,7 +30,7 @@ function createPicker({secure = true} = {}) {
         marker: () => ({addTo() { return this; }, on() { return this; }, setLatLng() {}, remove() {}}),
     };
     runInNewContext(source, {
-        document: {querySelector: () => picker},
+        document: {querySelector: selector => selector === '[data-complaint-location]' ? picker : null},
         navigator: {geolocation: {getCurrentPosition(success, error, options) { requests.push({success, error, options}); }}},
         window: {isSecureContext: secure},
         L: leaflet, markerIcon: '', markerIconRetina: '', markerShadow: '',
@@ -89,4 +89,49 @@ test('insecure contexts do not attempt geolocation', () => {
     ui.click('locate');
     assert.equal(ui.requests.length, 0);
     assert.match(ui.element('[data-location-status]').textContent, /HTTPS/);
+});
+
+function createPreview(latitude, longitude) {
+    const mapElement = {dataset: {latitude, longitude}, hidden: false};
+    const status = {textContent: ''};
+    const preview = {querySelector: selector => selector === '[data-location-preview-map]' ? mapElement : status};
+    const result = {mapElement, status};
+    const map = {setView(point, zoom) { result.center = [...point]; result.zoom = zoom; return this; }, invalidateSize() {}};
+    runInNewContext(source, {
+        document: {querySelector: selector => selector === '[data-complaint-location-preview]' ? preview : null},
+        L: {
+            map(element, options) { result.mapOptions = options; return map; },
+            tileLayer(url, options) {
+                result.tileUrl = url;
+                result.attribution = options.attribution;
+                return {addTo() { return this; }, on(event, callback) { result[event] = callback; return this; }};
+            },
+            icon: () => ({}),
+            marker(point, options) { result.markerPoint = [...point]; result.markerOptions = options; return {addTo() {}}; },
+        },
+        markerIcon: '', markerIconRetina: '', markerShadow: '',
+        ResizeObserver: class { observe() {} },
+    });
+    return result;
+}
+
+for (const point of [[14.4297, 120.9367], [0, 0]]) {
+    test(`detail map shows saved location ${point} with a fixed marker`, () => {
+        const ui = createPreview(...point.map(String));
+        assert.deepEqual(ui.center, point);
+        assert.deepEqual(ui.markerPoint, point);
+        assert.equal(ui.markerOptions.draggable, false);
+        assert.equal(ui.mapOptions.scrollWheelZoom, false);
+        assert.match(ui.tileUrl, /tile\.openstreetmap\.org/);
+        assert.match(ui.attribution, /OpenStreetMap/);
+        ui.tileerror();
+        assert.match(ui.status.textContent, /link below/);
+    });
+}
+
+test('detail map hides invalid coordinates', () => {
+    const ui = createPreview('91', '120');
+    assert.equal(ui.mapElement.hidden, true);
+    assert.equal(ui.center, undefined);
+    assert.match(ui.status.textContent, /cannot be displayed/);
 });

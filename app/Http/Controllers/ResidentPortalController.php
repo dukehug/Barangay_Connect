@@ -115,7 +115,7 @@ class ResidentPortalController extends Controller
 
     public function showComplaint(Request $request, int $complaint): View
     {
-        return view('resident.complaint-detail', ['complaint' => $request->user('resident')->complaints()->with('media')->findOrFail($complaint)]);
+        return view('resident.complaint-detail', ['complaint' => $request->user('resident')->complaints()->with('media', 'staffUpdates')->findOrFail($complaint)]);
     }
 
     public function storeComplaint(ResidentComplaintRequest $request): RedirectResponse

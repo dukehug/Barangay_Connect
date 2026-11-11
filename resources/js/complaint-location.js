@@ -4,6 +4,43 @@ import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerIconRetina from 'leaflet/dist/images/marker-icon-2x.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
+const preview = document.querySelector('[data-complaint-location-preview]');
+
+if (preview) {
+    const mapElement = preview.querySelector('[data-location-preview-map]');
+    const status = preview.querySelector('[data-location-preview-status]');
+    const latitude = Number(mapElement.dataset.latitude);
+    const longitude = Number(mapElement.dataset.longitude);
+
+    if (Number.isFinite(latitude) && Number.isFinite(longitude) && Math.abs(latitude) <= 90 && Math.abs(longitude) <= 180) {
+        const point = [latitude, longitude];
+        const map = L.map(mapElement, {scrollWheelZoom: false}).setView(point, 16);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
+        }).addTo(map).on('tileerror', () => {
+            status.textContent = 'The map could not fully load. Use the link below to view the location.';
+        });
+        L.marker(point, {
+            draggable: false,
+            title: 'Reported complaint location',
+            alt: 'Reported complaint location',
+            icon: L.icon({
+                iconUrl: markerIcon,
+                iconRetinaUrl: markerIconRetina,
+                shadowUrl: markerShadow,
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                shadowSize: [41, 41],
+            }),
+        }).addTo(map);
+        new ResizeObserver(() => map.invalidateSize()).observe(mapElement);
+    } else {
+        mapElement.hidden = true;
+        status.textContent = 'This location cannot be displayed on the map.';
+    }
+}
+
 const picker = document.querySelector('[data-complaint-location]');
 
 if (picker) {

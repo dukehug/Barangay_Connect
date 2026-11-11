@@ -830,6 +830,172 @@ summary {
 .documents-main .workflow-history {
     font-size: 0.8rem;
 }
+.document-progress-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+.document-progress-header h2 {
+    margin-bottom: 6px;
+}
+.document-progress-header p,
+.document-history .document-history-help {
+    margin: 0;
+    color: var(--document-muted);
+    font-size: 0.78rem;
+}
+.document-stepper-scroll {
+    overflow-x: auto;
+    padding: 4px 0 12px;
+}
+.document-stepper-scroll:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 4px;
+    border-radius: 6px;
+}
+.document-stepper {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.document-step {
+    position: relative;
+    flex: 1 0 140px;
+    min-width: 0;
+    text-align: center;
+    color: #737d91;
+}
+.document-step:not(:first-child)::before {
+    content: "";
+    position: absolute;
+    top: 18px;
+    right: calc(50% + 23px);
+    width: calc(100% - 46px);
+    height: 2px;
+    background: #e2e6ef;
+}
+.document-step.is-complete::before,
+.document-step.is-current::before {
+    background: var(--blue);
+}
+.document-step-marker {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    margin: 0 auto 12px;
+    border: 2px solid #e2e6ef;
+    border-radius: 50%;
+    background: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-sizing: border-box;
+}
+.document-step.is-complete .document-step-marker {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+}
+.document-step.is-current .document-step-marker {
+    border-color: var(--blue);
+    color: var(--blue);
+    box-shadow: 0 0 0 4px #eef0ff;
+}
+.document-step.is-current.is-complete .document-step-marker {
+    color: #fff;
+}
+.document-step.is-stopped .document-step-marker,
+.document-step.needs-attention .document-step-marker {
+    border-color: #a64b19;
+    color: #a64b19;
+    background: #fff6ed;
+    box-shadow: 0 0 0 4px #fff6ed;
+}
+.document-step strong {
+    display: block;
+    padding: 0 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+.document-step.is-complete strong,
+.document-step.is-current strong {
+    color: #293247;
+}
+.document-step-caption {
+    display: block;
+    padding: 0 8px;
+    margin-top: 6px;
+    font-size: 0.7rem;
+    overflow-wrap: anywhere;
+}
+.document-step.is-current .document-step-caption {
+    color: var(--blue);
+}
+.document-step.is-stopped .document-step-caption,
+.document-step.needs-attention .document-step-caption {
+    color: #a64b19;
+}
+.document-history summary {
+    cursor: pointer;
+}
+.document-history .document-history-help {
+    margin: 12px 0 24px;
+}
+.document-history .document-timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 7px;
+}
+.document-timeline .document-timeline-event {
+    position: relative;
+    border-left: 2px solid #e2e6ef;
+    padding: 0 0 28px 26px;
+    overflow-wrap: anywhere;
+}
+.document-timeline .document-timeline-event:last-child {
+    border-left-color: transparent;
+    padding-bottom: 0;
+}
+.document-timeline-event::before {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: -6px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #bac3d5;
+    box-shadow: 0 0 0 4px #fff;
+}
+.document-timeline-event.is-latest::before {
+    background: var(--blue);
+    box-shadow: 0 0 0 4px #eef0ff;
+}
+.document-timeline-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+}
+.document-timeline-event h3 {
+    margin: 0;
+    color: #293247;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+.document-timeline-event time {
+    color: var(--document-muted);
+    font-size: 0.75rem;
+}
+.document-timeline-event p {
+    margin: 8px 0 0;
+    color: #53617b;
+}
 @media (max-width: 760px) {
     .documents-main .page-head {
         align-items: flex-start;
@@ -1186,6 +1352,24 @@ summary {
 }
 .complaint-location-map[hidden] {
     display: none;
+}
+.complaint-location-preview {
+    margin-top: 24px;
+}
+.complaint-location-preview h3 {
+    margin: 0 0 12px;
+    font-size: 0.9rem;
+    color: #293247;
+}
+.complaint-location-preview .complaint-location-map {
+    height: 260px;
+    margin-bottom: 12px;
+}
+.complaint-location-preview [data-location-preview-status]:empty {
+    display: none;
+}
+.complaint-location-preview .leaflet-control-zoom a {
+    color: #293247;
 }
 .complaint-location-coordinates {
     display: grid;

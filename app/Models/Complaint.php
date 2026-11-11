@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -76,6 +77,13 @@ class Complaint extends Model implements HasMedia
             fn (Builder $query): Builder => $query->where('table_affected', 'complaints')
                 ->where('action', 'updated')->whereNotNull('staff_id'),
         )->where('table_affected', 'complaints')->where('action', 'updated');
+    }
+
+    public function staffUpdates(): HasMany
+    {
+        return $this->hasMany(AuditLog::class, 'record_id')->where('table_affected', 'complaints')
+            ->where('action', 'updated')->whereNotNull('staff_id')
+            ->latest('created_at')->orderByDesc('id');
     }
 
     public function complaintType(): BelongsTo

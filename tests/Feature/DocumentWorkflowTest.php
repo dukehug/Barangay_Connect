@@ -68,6 +68,51 @@ class DocumentWorkflowTest extends TestCase
         }
     }
 
+    public function test_resident_progress_shows_the_current_major_stage_for_every_status(): void
+    {
+        foreach (RequestStatus::cases() as $status) {
+            $request = $this->application(status: $status);
+            if ($status === RequestStatus::AwaitingConfirmation) {
+                $request->update(['confirmation_expires_at' => now()->addDays(3)]);
+            }
+            $expectedStage = match ($status) {
+                RequestStatus::Approved, RequestStatus::Processing, RequestStatus::AwaitingSignature => 'Preparation',
+                RequestStatus::Ready => 'Ready for pickup',
+                RequestStatus::Released => 'Released',
+                RequestStatus::Rejected, RequestStatus::Cancelled => $status->getLabel(),
+                default => 'Review',
+            };
+
+            $response = $this->actingAs($request->resident, 'resident')
+                ->get(route('resident.documents.show', $request))->assertOk();
+            $html = new \DOMDocument;
+            @$html->loadHTML($response->getContent());
+            $xpath = new \DOMXPath($html);
+            $this->assertSame(1, $xpath->query('//li[@aria-current="step"]')->length);
+            $this->assertSame($expectedStage, $xpath->evaluate('normalize-space(//li[@aria-current="step"]/strong)'), $status->value);
+            $this->assertSame($status->getLabel(), $xpath->evaluate('normalize-space(//li[@aria-current="step"]/span[@class="document-step-caption"])'));
+            if (in_array($status, [RequestStatus::Rejected, RequestStatus::Cancelled], true)) {
+                $this->assertSame(2, $xpath->query('//ol[@class="document-stepper"]/li')->length);
+            }
+            $response->assertSee('Existing application')->assertSee('New updates will appear here.');
+        }
+    }
+
+    public function test_resident_history_is_expanded_below_progress_with_latest_events_first(): void
+    {
+        $request = $this->application(status: RequestStatus::Ready);
+        $request->events()->create(['action' => 'Application submitted', 'note' => 'Original request']);
+        $event = $request->events()->create(['action' => 'Ready for pickup', 'note' => '<script>alert("note")</script>']);
+        $event->forceFill(['created_at' => CarbonImmutable::parse('2026-10-23 15:00', 'Asia/Manila')])->save();
+
+        $this->actingAs($request->resident, 'resident')->get(route('resident.documents.show', $request))
+            ->assertOk()
+            ->assertSeeInOrder(['Application progress', 'Application history', 'Application details', 'Next action'])
+            ->assertSee('<details class="workflow-card workflow-disclosure document-history" open>', false)
+            ->assertSeeInOrder(['document-timeline', 'Ready for pickup', 'Oct 23, 2026 · 15:00', 'Application submitted'])
+            ->assertSee($event->note)->assertDontSee($event->note, false);
+    }
+
     public function test_deadline_skips_weekends_preserves_minutes_and_uses_philippine_time(): void
     {
         $deadline = app(ConfirmationDeadline::class);

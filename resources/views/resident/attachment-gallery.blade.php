@@ -39,6 +39,6 @@
             <p>No attachments yet.</p>
         @endforelse
     </div>
-    @if($document->attachments->isNotEmpty())<p class="attachment-hint">Private files · Preview links expire in 30 minutes. Refresh to renew.</p>@endif
+    @if($document->attachments->isNotEmpty())@endif
 </section>
 @include('resident.attachment-preview-dialog')
