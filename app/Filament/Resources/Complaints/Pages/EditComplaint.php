@@ -18,6 +18,11 @@ class EditComplaint extends EditRecord
 {
     protected static string $resource = ComplaintResource::class;
 
+    protected function getRedirectUrl(): string
+    {
+        return ComplaintResource::getUrl('index');
+    }
+
     public function getMaxContentWidth(): Width
     {
         return Width::Full;

@@ -20,7 +20,7 @@
     <div class="toolbar"><button type="button" id="print-document">Print document</button></div>
     <main>
         <header>Republic of the Philippines<br><strong>{{ config('barangay.office_name', 'Barangay Office') }}</strong></header>
-        <h1>{{ $document->documentType->document_type_name }}</h1>
+        <h1>Proof of Transaction</h1>
         <p>Reference: <strong>{{ $document->reference }}</strong><br>Date printed: {{ now()->setTimezone('Asia/Manila')->format('F d, Y') }}</p>
         <p>Issued upon the request of the applicant named below for the stated purpose.</p>
         <dl><div><dt>Applicant</dt><dd>{{ $document->resident->full_name }}</dd></div><div><dt>Address</dt><dd>{{ $document->resident->resident_address }}</dd></div><div><dt>Purpose</dt><dd>{{ $document->purpose }}</dd></div></dl>
@@ -32,7 +32,7 @@
             @if($document->review_note)<p>{{ $document->review_note }}</p>@endif
         @endif
         @if($document->official_receipt)<p>Official Receipt: {{ $document->official_receipt }}<br>Amount paid: ₱{{ $document->amount_paid }}</p>@endif
-        <div class="signature">________________________________<br>Barangay Officer<br>Signature over printed name</div>
+        <div class="signature">________________________________<br>Resident Signature<br> </div>
         
         <footer>
             <style>

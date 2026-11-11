@@ -23,6 +23,11 @@ class EditDocumentRequest extends EditRecord
 {
     protected static string $resource = DocumentRequestResource::class;
 
+    protected function getRedirectUrl(): string
+    {
+        return DocumentRequestResource::getUrl('index');
+    }
+
     public function getMaxContentWidth(): Width
     {
         return Width::Full;
