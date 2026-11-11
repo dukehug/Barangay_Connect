@@ -4,12 +4,10 @@ namespace App\Filament\Resources\Complaints\Schemas;
 
 use App\Enums\ComplaintStatus;
 use App\Filament\Resources\Complaints\Pages\EditComplaint;
-use App\Models\Complaint;
 use App\Models\Resident;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\View;
@@ -41,13 +39,7 @@ class ComplaintForm
                             ->required()
                             ->rows(6)
                             ->columnSpanFull(),
-                        TextEntry::make('location')
-                            ->label('Location')
-                            ->icon('heroicon-o-map-pin')
-                            ->state(fn (?Complaint $record): ?string => $record?->googleMapsUrl() ? $record->latitude.', '.$record->longitude.' · Open in Google Maps' : null)
-                            ->placeholder('No location provided')
-                            ->url(fn (?Complaint $record): ?string => $record?->googleMapsUrl())
-                            ->openUrlInNewTab()
+                        View::make('filament.complaint-location')
                             ->columnSpanFull(),
                     ])->columns(2)->columnSpanFull(),
 
